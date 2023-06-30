@@ -210,10 +210,10 @@ return {
 	moveForward = MoveForwardUtil,
 	moveUp = MoveUpUtil,
 	moveDown = MoveDownUtil,
-	returnHome = ReturnHome
+	returnHome = ReturnHome,
 	turnRight = TurnRightUtil,
 	turnLeft = TurnLeftUtil,
-	mineForward = MineForwards
+	mineForward = MineForwards,
 	mineLayer = MineLayer
 }
 

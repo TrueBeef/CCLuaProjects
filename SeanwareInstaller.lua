@@ -15,14 +15,14 @@ end --close the function
 
 term.clear()
 term.setCursorPos(1,1)
-write("Filename in CCLuaProjectsRepo: ")
+term.write("Filename in CCLuaProjectsRepo: ")
 local repoFile = read()
 repoFile = (repoFile .. ".lua")
 
 term.clear()
 term.setCursorPos(1,1)
-write("Selected Filename: " .. repoFile .. "\n")
-write("Save as: ")
+term.write("Selected Filename: " .. repoFile .. "\n")
+term.write("Save as: ")
 local saveAs = read()
 
 InstallFromGit(repoFile, saveAs)
