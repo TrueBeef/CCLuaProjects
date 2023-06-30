@@ -17,7 +17,7 @@ term.clear()
 term.setCursorPos(1,1)
 write("Filename in CCLuaProjectsRepo: ")
 local repoFile = read()
-repoFile .. ".lua"
+repoFile = repoFile .. ".lua"
 
 term.clear()
 term.setCursorPos(1,1)
