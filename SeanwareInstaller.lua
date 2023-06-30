@@ -1,5 +1,5 @@
 local function InstallFromGit(repoFile, saveTo)
-local download = http.get("https://github.com/TrueBeef/CCLuaProjects/raw/main/" .. repoFile) --This will make 'download' hold the contents of the file.
+local download = http.get("https://github.com/TrueBeef/CCLuaProjects/raw/main/" .. repoFile .. ".lua") --This will make 'download' hold the contents of the file.
 if download then --checks if download returned true or false
    local handle = download.readAll() --Reads everything in download
    download.close() --remember to close the download!
@@ -27,7 +27,6 @@ term.setCursorPos(1,1)
 term.write("Filename in CCLuaProjectsRepo:")
 term.setCursorPos(1,2)
 local repoFile = read()
-repoFile = (repoFile .. ".lua")
 
 term.clear()
 term.setCursorPos(1,1)
