@@ -14,8 +14,11 @@ if download then --checks if download returned true or false
   end --end the if
 end --close the function
 
+--Put all our things here we for sure want installed.
+-- Just the filenames.
 print("Installing Dependencies ... ")
-InstallFromGit(repoFile, saveAs)
+InstallFromGit("TurtleMovementUtil", "TurtleMovementUtil")
+InstallFromGit("MinePlus", "MinePlus")
 
 sleep(3)
 
