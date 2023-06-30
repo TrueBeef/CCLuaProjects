@@ -6,23 +6,32 @@ if download then --checks if download returned true or false
    local file = fs.open(saveTo,"w") --opens the file defined in 'saveTo' with the permissions to write.
    file.write(handle) --writes all the stuff in handle to the file defined in 'saveTo'
    file.close() --remember to close the file!
+   print("Installed file: " .. repoFile)
   else --if returned false
-   print("Unable to download the file "..repoFile)
+   print("Unable to download the file ".. repoFile)
    print("Make sure you have the HTTP API enabled or")
    print("an internet connection!")
   end --end the if
 end --close the function
 
+print("Installing Dependencies ... ")
+InstallFromGit(repoFile, saveAs)
+
+sleep(3)
+
 term.clear()
 term.setCursorPos(1,1)
-term.write("Filename in CCLuaProjectsRepo: ")
+term.write("Filename in CCLuaProjectsRepo:")
+term.setCursorPos(1,2)
 local repoFile = read()
 repoFile = (repoFile .. ".lua")
 
 term.clear()
 term.setCursorPos(1,1)
-term.write("Selected Filename: " .. repoFile .. "\n")
+term.write("Selected Filename: " .. repoFile)
+term.setCursorPos(1,2)
 term.write("Save as: ")
+term.setCursorPos(1,3)
 local saveAs = read()
 
 InstallFromGit(repoFile, saveAs)
