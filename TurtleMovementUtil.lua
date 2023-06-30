@@ -11,18 +11,13 @@ localZPos = 0
 
 shouldReturnHome = false;
 
-
 lastTurnDir = turnDirection.None
 currentFacingDir = facingDirection.North
-
-
 
 --This is stupid. fix later.
 local function FuelUp()
 	turtle.refuel()
 end
-
-
 
 local function CheckFuel (MovementSteps)
 	local fuelRemaining = turtle.getFuelLevel()
