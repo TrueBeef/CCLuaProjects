@@ -1,3 +1,5 @@
+-- Shortened Raw Link: https://tinyurl.com/SeanWareInstaller
+
 local function InstallFromGit(repoFile, saveTo)
 local download = http.get("https://github.com/TrueBeef/CCLuaProjects/raw/main/" .. repoFile .. ".lua") --This will make 'download' hold the contents of the file.
 if download then --checks if download returned true or false
@@ -24,8 +26,14 @@ sleep(3)
 
 term.clear()
 term.setCursorPos(1,1)
-term.write("Filename in CCLuaProjectsRepo:")
+term.setTextColor(colors.orange)
+term.write("~ SEANWARE Installer ~")
+term.setTextColor(colors.white)
 term.setCursorPos(1,2)
+term.write("Enter filename of program to install from seans Git repo")
+term.setCursorPos(1,3)
+term.write("Filename in CCLuaProjectsRepo:")
+term.setCursorPos(1,4)
 local repoFile = read()
 
 term.clear()
