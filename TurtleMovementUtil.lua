@@ -203,18 +203,6 @@ local function ReturnHome()
 end
 
 --When this file is 'required' it returns the functions below
-return { 
-	returnHome = ReturnHome,
-	fuelUp = FuelUp,
-	checkFuel = CheckFuel,
-	moveForward = MoveForwardUtil,
-	moveUp = MoveUpUtil,
-	moveDown = MoveDownUtil,
-	returnHome = ReturnHome,
-	turnRight = TurnRightUtil,
-	turnLeft = TurnLeftUtil,
-	mineForward = MineForwards,
-	mineLayer = MineLayer
-}
+return { returnHome = ReturnHome, fuelUp = FuelUp, checkFuel = CheckFuel, moveForward = MoveForwardUtil, moveUp = MoveUpUtil, moveDown = MoveDownUtil, returnHome = ReturnHome, turnRight = TurnRightUtil, turnLeft = TurnLeftUtil, mineForward = MineForwards, mineLayer = MineLayer }
 
 	
