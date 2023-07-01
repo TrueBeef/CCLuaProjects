@@ -1,3 +1,6 @@
+
+-- More advanced turtle helpers that can be used to make full programs
+
 turnDirection = { None = 0, Left = 1, Right = 2 }
 facingDirection = { North = 1, East = 2, South = 3, West = 4 }
 miningQuadrant = { Left = 0, Right = 1}
@@ -9,10 +12,19 @@ localXPos = 0
 localYPos = 0
 localZPos = 0
 
-shouldReturnHome = false;
-
 lastTurnDir = turnDirection.None
 currentFacingDir = facingDirection.North
+
+local function InitializeGlobals()
+	-- Prolly dont need to do these but eh
+	localXPos = 0
+	localYPos = 0
+	localZPos = 0
+
+	lastTurnDir = turnDirection.None
+	currentFacingDir = facingDirection.North
+end
+
 
 --This is stupid. fix later.
 local function FuelUp()
@@ -115,7 +127,7 @@ local function MineForwards (MineForwardsCount)
 		turtle.digDown()		
 
 		if(i ~= mineFwdNum) then
-			if(MoveForwardUtil() == false)	then
+			if(MoveForwardUtil() == false)then
 				turtle.dig()
 			end
 		end
@@ -203,6 +215,19 @@ local function ReturnHome()
 end
 
 --When this file is 'required' it returns the functions below
-return { returnHome = ReturnHome, fuelUp = FuelUp, checkFuel = CheckFuel, moveForward = MoveForwardUtil, moveUp = MoveUpUtil, moveDown = MoveDownUtil, returnHome = ReturnHome, turnRight = TurnRightUtil, turnLeft = TurnLeftUtil, mineForward = MineForwards, mineLayer = MineLayer }
+return { 
+	returnHome = ReturnHome,
+	fuelUp = FuelUp,
+	checkFuel = CheckFuel,
+	moveForward = MoveForwardUtil,
+	moveUp = MoveUpUtil,
+	moveDown = MoveDownUtil,
+	returnHome = ReturnHome,
+	turnRight = TurnRightUtil,
+	turnLeft = TurnLeftUtil,
+	mineForward = MineForwards,
+	mineLayer = MineLayer,
+	initGlobals = InitializeGlobals
+}
 
 	

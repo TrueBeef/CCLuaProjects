@@ -9,8 +9,10 @@ if download then --checks if download returned true or false
    local file = fs.open(saveTo,"w") --opens the file defined in 'saveTo' with the permissions to write.
    file.write(handle) --writes all the stuff in handle to the file defined in 'saveTo'
    file.close() --remember to close the file!
+   term.setTextColor(colors.green)
    print("Installed file: " .. repoFile)
   else --if returned false
+  term.setTextColor(colors.red)
    print("Unable to download the file ".. repoFile)
    print("Make sure you have the HTTP API enabled or")
    print("an internet connection!")
@@ -19,6 +21,7 @@ end --close the function
 
 --Put all our things here we for sure want installed.
 -- Just the filenames.
+term.setTextColor(colors.white)
 print("Installing Dependencies ... ")
 InstallFromGit("TurtleMovementUtil", "TurtleMovementUtil")
 InstallFromGit("MinePlus", "MinePlus")
@@ -31,7 +34,7 @@ term.setTextColor(colors.orange)
 term.write("~ SEANWARE Installer ~")
 term.setTextColor(colors.white)
 term.setCursorPos(1,2)
-term.write("Enter filename of program to install from seans Git repo")
+term.write("Enter filename of program to \n install from seans Git repo")
 term.setCursorPos(1,3)
 term.write("Filename in CCLuaProjectsRepo:")
 term.setCursorPos(1,4)
