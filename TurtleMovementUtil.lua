@@ -164,6 +164,7 @@ local function MineForwards (MineForwardsCount)
 		if(i ~= mineFwdNum) then
 			if(MoveForwardUtil() == false)then
 				turtle.dig()
+				MoveForwardUtil()
 			end
 		end
 
