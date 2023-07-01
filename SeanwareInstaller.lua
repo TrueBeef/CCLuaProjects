@@ -3,6 +3,7 @@
 
 term.setTextColor(colors.orange)
 print("~ SEANWARE Installer ~")
+print("Checking for updates.. ")
 
 local function InstallFromGit(repoFile, saveTo)
 local download = http.get("https://github.com/TrueBeef/CCLuaProjects/raw/main/" .. repoFile .. ".lua") --This will make 'download' hold the contents of the file.
@@ -58,6 +59,9 @@ end
 
 --Put all our things here we for sure want installed.
 -- Just the filenames.
+--Check for updates to the installer.
+InstallFromGit("SeanwareInstaller", "startup")
+
 term.setTextColor(colors.orange)
 print("Installing Dependencies ... ")
 InstallFromGit("TurtleMovementUtil", "TurtleMovementUtil")
