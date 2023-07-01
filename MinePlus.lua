@@ -10,7 +10,7 @@ local function MineLayer(LayerWidth, LayerLength, LayerDepth)
 		turtle.dig()
 		turtleUtil.moveForward()
 	end
-	for z = 0, layD do
+	for z = 0, math.abs(layD), 1 do
 
 		for x = 1, layW, 1 do	
 			turtleUtil.mineForward(layL)
@@ -20,12 +20,22 @@ local function MineLayer(LayerWidth, LayerLength, LayerDepth)
 			end
 		end
 
-		if(layD ~= 0 and z ~= layD) then
-			--Turn around.
-			turtleUtil.turnAround()
-			
-			--Go down 3 levels
-			turtleUtil.mineDown()
+		--Turn around.
+		turtleUtil.turnAround()
+
+		-- Go up or go down?
+		if(layD > 0) then
+			-- We want to mine up.
+			if(layD ~= 0 and z ~= math.abs(layD)) then			
+				--Go up 3 levels
+				turtleUtil.mineUp()
+			end
+		else
+			-- We want to mine down			
+			if(layD ~= 0 and z ~= math.abs(layD)) then			
+				--Go up 3 levels
+				turtleUtil.mineUp()
+			end
 		end
 	end
 end
