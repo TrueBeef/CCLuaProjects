@@ -8,23 +8,27 @@ miningQuadrant = { Left = 0, Right = 1}
 mineLayerWidth = 0
 mineLayerLength = 0
 
-localXPos = 0
-localYPos = 0
-localZPos = 0
+localPos = new(0, 0, 0)
 
 lastTurnDir = turnDirection.None
 currentFacingDir = facingDirection.North
 
 local function InitializeGlobals()
 	-- Prolly dont need to do these but eh
-	localXPos = 0
-	localYPos = 0
-	localZPos = 0
+	localPos = new(0, 0, 0)
 
 	lastTurnDir = turnDirection.None
 	currentFacingDir = facingDirection.North
 end
+--Saving and loading the last known position of this turtle.
+--Helps us not get lost.
+local function SaveLocalPositioning()
+	
+end
 
+local function LoadLocalPositioning()
+	
+end
 
 --This is stupid. fix later.
 local function FuelUp()
@@ -41,20 +45,27 @@ local function CheckFuel (MovementSteps)
 end
 
 local function CheckInventoryFullnes ()
-	-- Check if the inventory is full or not.
+	local emptySlots = 0
+	local fullness = 0
+
+-- Check if the inventory is full or not.
 end
 
 -- Moves the turtle while also tallying what directions we've moved
 local function MoveForwardUtil()
 	if(turtle.forward()) then
 		if(currentFacingDir == facingDirection.North) then
-			localYPos = localYPos + 1
+			-- Add to Y Coord
+			localPos = localPos + new(0, 1, 0)
 		elseif(currentFacingDir == facingDirection.South) then
-			localYPos = localYPos - 1
+			-- Subtract Y Coord
+			localPos = localPos - new(0, 1, 0)
 		elseif(currentFacingDir == facingDirection.East) then
-			localXPos = localXPos + 1
-		else 
-			localXPos = localXPos - 1
+			-- Add to X coord
+			localPos = localPos + new(1, 0, 0)
+		else
+			-- Subtract X coord
+			localPos = localPos - new(1, 0, 0)
 		end
 		return true
 	else
@@ -64,7 +75,8 @@ end
 
 local function MoveUpUtil()
 	if(turtle.up()) then
-		localZPos = localZPos + 1
+		-- Add Z coord
+		localPos = localPos + new(0, 0, 1)
 		return true
 	else
 		return false
@@ -73,7 +85,8 @@ end
 
 local function MoveDownUtil()
 	if(turtle.down()) then
-		localZPos = localZPos - 1
+		-- Subtract Z coord
+		localPos = localPos - new(0, 0, 1)
 	else
 		return false
 	end	
@@ -114,24 +127,14 @@ local function TurnAround()
 	end
 end
 
--- Turns turtle, mines, moves, and turns again.
-local function TurnMineTurn()
-	if(lastTurnDir == turnDirection.Left or lastTurnDir == turnDirection.None) then		
-		TurnRightUtil()
-		turtle.dig()
-		MoveForwardUtil()
-		turtle.digUp()
-		turtle.digDown()
-		TurnRightUtil()
-
-	elseif(lastTurnDir == turnDirection.Right) then
-		TurnLeftUtil()
-		turtle.dig()
-		MoveForwardUtil()
-		turtle.digUp()
-		turtle.digDown()
-		TurnLeftUtil()
-	end
+local function FaceDirection(targDirection)
+	while(currentFacingDir ~= targDirection) do
+		if(targDirection > (currentFacingDir + 2)) then
+			TurnLeftUtil()
+		else
+			TurnRightUtil()
+		end
+	end	
 end
 
 -- Mines down 3 blocks such that 
@@ -172,86 +175,68 @@ local function MineForwards (MineForwardsCount)
 	end	
 end
 
-local function ReturnHome() 
-
+local function GoToPosition(targetPos)
 	-- Travel Up or down
-	if(localZPos < 0) then		
-		while(localZPos ~= 0) do
+	if(targetPos.z < 0) then		
+		while(localPos.z ~= targetPos.z) do
 			if(MoveUpUtil() == false) then
 				turtle.digUp()
 			end
 		end
 	else
-		while(localZPos ~= 0) do
+		while(localPos.z ~= targetPos.z) do
 			if(MoveDownUtil() == false) then
 				turtle.digDown()
 			end
 		end
-	end	
-
+	end
 
 	--Adjust X Pos
-	if(localXPos > 0) then		
-		while(currentFacingDir ~= facingDirection.West) do
-			TurnRightUtil()
-		end
+	if(targetPos.x > 0) then		
+		FaceDirection(facingDirection.West)
 	else
-		while(currentFacingDir ~= facingDirection.East) do
-			TurnLeftUtil()
-		end
+		FaceDirection(facingDirection.East)
 	end
 
-	while(localXPos ~= 0) do
+	while(localPos.x ~= targetPos.x) do
 		if(MoveForwardUtil() == false) then
 			turtle.dig()
 		end
 	end
-
 
 	--Adjust Y pos
-	if(localYPos > 0) then		
-		while(currentFacingDir ~= facingDirection.South) do
-			TurnLeftUtil()
-		end		
+	if(localPos.y > 0) then		
+		FaceDirection(facingDirection.South)	
 	else
-		while(currentFacingDir ~= facingDirection.North) do
-			TurnRightUtil()
-		end			
+		FaceDirection(facingDirection.North)	
 	end
 
-	while(localYPos ~= 0) do
+	while(localPos.y ~= targetPos.y) do
 		if(MoveForwardUtil() == false) then
 			turtle.dig()
 		end
-	end
-
-	while(turtleUtil.currentFacingDir ~= turtleUtil.facingDirection.North) do
-		turtleUtil.turnRight()
-	end
+	end	
 end
 
 --When this file is 'required' it returns the functions below
 return { 
-	returnHome = ReturnHome,
+	initGlobals = InitializeGlobals,	
 	fuelUp = FuelUp,
 	checkFuel = CheckFuel,
 	moveForward = MoveForwardUtil,
 	moveUp = MoveUpUtil,
-	moveDown = MoveDownUtil,
-	returnHome = ReturnHome,
+	moveDown = MoveDownUtil,	
 	turnRight = TurnRightUtil,
 	turnLeft = TurnLeftUtil,
 	turnAround = TurnAround,
+	faceDirection = FaceDirection,
 	mineForward = MineForwards,	
 	mineDown = MineDownUtil,
-	mineUp = MineUpUtil,
-	turnMineTurn = TurnMineTurn,
-	initGlobals = InitializeGlobals,
+	mineUp = MineUpUtil,	
+	goToPos = GoToPosition,
 	currentFacingDir = currentFacingDir,
-	facingDirection = facingDirection,
-	localXPos = localXPos,
-	localYPos = localYPos,
-	localZPos = localZPos
+	direction = facingDirection,
+	localPosition = localPos
 }
 
 	

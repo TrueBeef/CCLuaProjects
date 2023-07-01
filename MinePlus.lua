@@ -1,6 +1,4 @@
 turtleUtil = require("TurtleMovementUtil")
-
--- Mines one layer of material - good for mining obsidian?
 local function MineLayer(LayerWidth, LayerLength, LayerDepth)	
 	local layW = tonumber(LayerWidth)
 	local layL = tonumber(LayerLength)	
@@ -10,19 +8,17 @@ local function MineLayer(LayerWidth, LayerLength, LayerDepth)
 		turtle.dig()
 		turtleUtil.moveForward()
 	end
+	for z=1,layD, 1 do
+		for x=1, layL, 1 do
+			for y=1, layW, 1 do
+			
+				local turtPos = turtleUtil.localPosition
 
-	for z = 0, math.abs(layD), 1 do
-
-		for x = 1, layW, 1 do	
-			turtleUtil.mineForward(layL)
-		
-			if(x ~= layW) then
-				turtleUtil.turnMineTurn()
+				turtleUtil.goToPos(new(x, y, turtPos.z))
+				turtle.digUp()
+				turtle.digDown()
 			end
 		end
-
-		--Turn around.
-		turtleUtil.turnAround()
 
 		-- Go up or go down?
 		if(layD > 0) then
