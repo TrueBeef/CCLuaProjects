@@ -159,7 +159,7 @@ local function MineForwards (MineForwardsCount)
 	local mineFwdNum = tonumber(MineForwardsCount)	
 	for i = 1, mineFwdNum, 1 do
 		turtle.digUp()
-		turtle.digDown()		
+		turtle.digDown()
 
 		if(i ~= mineFwdNum) then
 			if(MoveForwardUtil() == false)then
