@@ -170,13 +170,7 @@ local function ReturnHome()
 				turtle.digDown()
 			end
 		end
-	end
-
-	while(localXPos ~= 0) do
-		if(MoveForwardUtil() == false) then
-			turtle.dig()
-		end
-	end
+	end	
 
 	--Adjust X Pos
 	if(localXPos > 0) then		
