@@ -1,6 +1,9 @@
 -- Shortened Raw Link: https://tinyurl.com/SeanWareInstaller
 -- wget run https://tinyurl.com/SeanWareInstaller
 
+term.setTextColor(colors.orange)
+print("~ SEANWARE Installer ~")
+
 local function InstallFromGit(repoFile, saveTo)
 local download = http.get("https://github.com/TrueBeef/CCLuaProjects/raw/main/" .. repoFile .. ".lua") --This will make 'download' hold the contents of the file.
 if download then --checks if download returned true or false
@@ -19,33 +22,46 @@ if download then --checks if download returned true or false
   end --end the if
 end --close the function
 
+local function InstallAdditionalModules()
+	term.setTextColor(colors.white)
+	print("Install others? (y/n)")
+	installMore = read()
+
+	if(installMore == "y") then
+		term.clear()
+		term.setCursorPos(1,1)
+		term.setTextColor(colors.orange)
+		term.write("~ SEANWARE Installer ~")
+		term.setTextColor(colors.white)
+		term.setCursorPos(1,2)
+		term.write("Enter filename of program to \n install from seans Git repo")
+		term.setCursorPos(1,3)
+		term.write("Filename in CCLuaProjectsRepo:")
+		term.setCursorPos(1,4)
+		local repoFile = read()
+
+		term.clear()
+		term.setCursorPos(1,1)
+		term.write("Selected Filename: " .. repoFile)
+		term.setCursorPos(1,2)
+		term.write("Save as: ")
+		term.setCursorPos(1,3)
+		local saveAs = read()
+
+		InstallFromGit(repoFile, saveAs)
+	else
+		term.clear()
+		term.setTextColor(colors.green)
+		print("Done Installing Modules.")
+	end
+end
+
 --Put all our things here we for sure want installed.
 -- Just the filenames.
-term.setTextColor(colors.white)
+term.setTextColor(colors.orange)
 print("Installing Dependencies ... ")
 InstallFromGit("TurtleMovementUtil", "TurtleMovementUtil")
 InstallFromGit("MinePlus", "MinePlus")
 
-sleep(3)
-
-term.clear()
-term.setCursorPos(1,1)
-term.setTextColor(colors.orange)
-term.write("~ SEANWARE Installer ~")
-term.setTextColor(colors.white)
-term.setCursorPos(1,2)
-term.write("Enter filename of program to \n install from seans Git repo")
-term.setCursorPos(1,3)
-term.write("Filename in CCLuaProjectsRepo:")
-term.setCursorPos(1,4)
-local repoFile = read()
-
-term.clear()
-term.setCursorPos(1,1)
-term.write("Selected Filename: " .. repoFile)
-term.setCursorPos(1,2)
-term.write("Save as: ")
-term.setCursorPos(1,3)
-local saveAs = read()
-
-InstallFromGit(repoFile, saveAs)
+-- Any additional stuff
+InstallAdditionalModules()

@@ -40,6 +40,10 @@ local function CheckFuel (MovementSteps)
 	end
 end
 
+local function CheckInventoryFullnes
+	-- Check if the inventory is full or not.
+end
+
 -- Moves the turtle while also tallying what directions we've moved
 local function MoveForwardUtil()
 	if(turtle.forward()) then
@@ -135,7 +139,7 @@ end
 -- a block is above, in front, and below 
 -- the turtle.
 local function MineDown()
-	for i=0,3 do
+	for i=1,4 do
 		if(MoveDownUtil() == false) then
 			turtle.digDown()
 		end

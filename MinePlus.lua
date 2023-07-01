@@ -20,11 +20,12 @@ local function MineLayer(LayerWidth, LayerLength, LayerDepth)
 			end
 		end
 
-		if(layD ~= 0) then
-			--Go down one.
-			turtleUtil.mineDown()
+		if(layD ~= 0 && z ~= layD) then
 			--Turn around.
 			turtleUtil.turnAround()
+			
+			--Go down 3 levels
+			turtleUtil.mineDown()
 		end
 	end
 end
