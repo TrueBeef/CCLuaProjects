@@ -99,11 +99,7 @@ function MinePLusInit ()
 
 	if(returnHome == "y") then
 		turtleUtil.returnHome()
-	end
-
-	while(turtleUtil.currentFacingDir ~= turtleUtil.facingDirection.North) do
-		turtleUtil.turnRight()
-	end
+	end	
 end
 
 MinePLusInit()

@@ -189,6 +189,7 @@ local function ReturnHome()
 		end
 	end	
 
+
 	--Adjust X Pos
 	if(localXPos > 0) then		
 		while(currentFacingDir ~= facingDirection.West) do
@@ -222,6 +223,10 @@ local function ReturnHome()
 		if(MoveForwardUtil() == false) then
 			turtle.dig()
 		end
+	end
+
+	while(turtleUtil.currentFacingDir ~= turtleUtil.facingDirection.North) do
+		turtleUtil.turnRight()
 	end
 end
 
