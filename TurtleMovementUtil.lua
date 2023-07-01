@@ -40,7 +40,7 @@ local function CheckFuel (MovementSteps)
 	end
 end
 
-local function CheckInventoryFullnes
+local function CheckInventoryFullnes ()
 	-- Check if the inventory is full or not.
 end
 
