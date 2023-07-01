@@ -6,7 +6,7 @@ local function MineLayer(LayerWidth, LayerLength, LayerDepth)
 	local layL = tonumber(LayerLength)	
 	local layD = tonumber(LayerDepth)	
 
-	if(MoveForwardUtil() == false) then
+	if(turtleUtil.moveForward() == false) then
 		turtle.dig()
 		turtleUtil.moveForward()
 	end
