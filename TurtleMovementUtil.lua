@@ -72,7 +72,7 @@ local function MoveDownUtil()
 		localZPos = localZPos - 1
 	else
 		return false
-	end
+	end	
 end
 
 local function TurnRightUtil()
@@ -99,6 +99,7 @@ local function TurnLeftUtil()
 	turtle.turnLeft()
 end
 
+-- Turns turtle, mines, moves, and turns again.
 local function TurnMineTurn()
 	if(lastTurnDir == turnDirection.Left or lastTurnDir == turnDirection.None) then		
 		TurnRightUtil()
@@ -118,8 +119,19 @@ local function TurnMineTurn()
 	end
 end
 
+-- Mines down 3 blocks such that 
+-- a block is above, in front, and below 
+-- the turtle.
+local function MineDown()
+	for i=1,3 do
+		if(MoveDownUtil() == false) then
+			turtle.digDown()
+		end
+	end
+end
 
--- Mines forwards X times and then returns to where it started.
+-- Mines forwards X times. 
+-- Checks fuel levels after every move.
 local function MineForwards (MineForwardsCount)	
 	local mineFwdNum = tonumber(MineForwardsCount)	
 	for i = 1, mineFwdNum, 1 do
@@ -134,25 +146,6 @@ local function MineForwards (MineForwardsCount)
 
 		CheckFuel(mineFwdNum + mineLayerWidth)
 	end	
-end
-
--- Mines one layer of material - good for mining obsidian?
-local function MineLayer(LayerWidth, LayerLength)	
-	local layW = tonumber(LayerWidth)
-	local layL = tonumber(LayerLength)	
-
-	if(MoveForwardUtil() == false) then
-		turtle.dig()
-		MoveForwardUtil()
-	end
-
-	for x = 1, layW, 1 do	
-		MineForwards(layL)
-		
-		if(x ~= layW) then
-			TurnMineTurn()
-		end
-	end
 end
 
 local function ReturnHome() 
@@ -219,8 +212,9 @@ return {
 	returnHome = ReturnHome,
 	turnRight = TurnRightUtil,
 	turnLeft = TurnLeftUtil,
-	mineForward = MineForwards,
-	mineLayer = MineLayer,
+	mineForward = MineForwards,	
+	mineDown = MineDown,
+	turnMineTurn = TurnMineTurn,
 	initGlobals = InitializeGlobals,
 	currentFacingDir = currentFacingDir,
 	facingDirection = facingDirection,

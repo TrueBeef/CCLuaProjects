@@ -1,6 +1,36 @@
 turtleUtil = require("TurtleMovementUtil")
 
-function ExcavateCustom ()
+-- Mines one layer of material - good for mining obsidian?
+local function MineLayer(LayerWidth, LayerLength, LayerDepth)	
+	local layW = tonumber(LayerWidth)
+	local layL = tonumber(LayerLength)	
+	local layD = tonumber(LayerDepth)	
+
+	if(MoveForwardUtil() == false) then
+		turtle.dig()
+		turtleUtil.moveForward()
+	end
+	for z = 0, layD do
+
+		for x = 1, layW, 1 do	
+			turtleUtil.mineForward(layL)
+		
+			if(x ~= layW) then
+				turtleUtil.turnMineTurn()
+			end
+		end
+
+		if(layD ~= 0) then
+			--Go down one.
+			turtleUtil.mineDown()
+			--Turn around.
+			turtleUtil.turnRight()
+			turtleUtil.turnRight()
+		end
+	end
+end
+
+function MinePLusInit ()
 	term.clear()
 	term.setCursorPos(1,1)
 	term.write("How Far Forward do you want to mine?")
@@ -16,22 +46,41 @@ function ExcavateCustom ()
 	term.setCursorPos(1,3)
 	mineLayerWidth = tonumber(read())
 
-	term.clear()	
-	term.setCursorPos(1,1)	
+	term.clear()		
+	term.setCursorPos(1,1)
+	term.write("Distance: " .. mineLayerLength)
+	term.setCursorPos(1,2)
+	term.write("Width: " .. mineLayerWidth)
+	term.setCursorPos(1,3)
+	term.write("Should we mine above/below? \n(e.g 50 or -50)")
+	term.setCursorPos(1,4)
+	mineLayerDepth = tonumber(read())
+
+	term.clear()		
+	term.setCursorPos(1,1)
+	term.write("Distance: " .. mineLayerLength)
+	term.setCursorPos(1,2)
+	term.write("Width: " .. mineLayerWidth)
+	term.setCursorPos(1,3)
+	term.write("Depth: " .. mineLayerDepth)
+	term.setCursorPos(1,4)
 	term.write("Should we return home after? (y/n)")
+	term.setCursorPos(1,5)	
 	returnHome = read()
 		
-	term.clear()	
-	term.setCursorPos(1,1)	
+	term.clear()
+	term.setCursorPos(1,1)
 	print("OK!")
 	print("Selected Distance: " .. mineLayerLength)
 	print("Selected Width: " .. mineLayerWidth)	
+	print("Selected Depth: " .. mineLayerDepth)
 	print("Returning Home: " .. returnHome)	
 	print("Mining!")		
 
 	turtleUtil.initGlobals()
 	turtleUtil.fuelUp()
-	turtleUtil.mineLayer(mineLayerWidth, mineLayerLength)
+
+	MineLayer(mineLayerWidth, mineLayerLength, mineLayerDepth)
 
 	if(returnHome == "y") then
 		turtleUtil.returnHome()
@@ -42,4 +91,4 @@ function ExcavateCustom ()
 	end
 end
 
-ExcavateCustom()
+MinePLusInit()
