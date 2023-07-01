@@ -99,6 +99,18 @@ local function TurnLeftUtil()
 	turtle.turnLeft()
 end
 
+local function TurnAround()
+	if(lastTurnDir == turnDirection.Left or lastTurnDir == turnDirection.None) then		
+		TurnLeftUtil()
+		TurnLeftUtil()
+
+	elseif(lastTurnDir == turnDirection.Right) then
+		TurnRightUtil()
+		TurnRightUtil()
+	end
+end
+
+
 -- Turns turtle, mines, moves, and turns again.
 local function TurnMineTurn()
 	if(lastTurnDir == turnDirection.Left or lastTurnDir == turnDirection.None) then		
@@ -123,7 +135,7 @@ end
 -- a block is above, in front, and below 
 -- the turtle.
 local function MineDown()
-	for i=1,3 do
+	for i=0,3 do
 		if(MoveDownUtil() == false) then
 			turtle.digDown()
 		end
@@ -212,6 +224,7 @@ return {
 	returnHome = ReturnHome,
 	turnRight = TurnRightUtil,
 	turnLeft = TurnLeftUtil,
+	turnAround = TurnAround,
 	mineForward = MineForwards,	
 	mineDown = MineDown,
 	turnMineTurn = TurnMineTurn,

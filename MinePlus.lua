@@ -24,8 +24,7 @@ local function MineLayer(LayerWidth, LayerLength, LayerDepth)
 			--Go down one.
 			turtleUtil.mineDown()
 			--Turn around.
-			turtleUtil.turnRight()
-			turtleUtil.turnRight()
+			turtleUtil.turnAround()
 		end
 	end
 end
