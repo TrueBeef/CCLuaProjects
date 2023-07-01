@@ -20,7 +20,7 @@ local function MineLayer(LayerWidth, LayerLength, LayerDepth)
 			end
 		end
 
-		if(layD ~= 0 && z ~= layD) then
+		if(layD ~= 0 and z ~= layD) then
 			--Turn around.
 			turtleUtil.turnAround()
 			
