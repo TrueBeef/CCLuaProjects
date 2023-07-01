@@ -23,12 +23,12 @@ function ExcavateCustom ()
 	print("Selected Width: " .. mineLayerWidth)	
 	print("Mining!")		
 
-	turtleUtil.FuelUp()
-	turtleUtil.MineLayer(mineLayerWidth, mineLayerLength)
-	turtleUtil.ReturnHome()
+	turtleUtil.fuelUp()
+	turtleUtil.mineLayer(mineLayerWidth, mineLayerLength)
+	turtleUtil.returnHome()
 
 	while(currentFacingDir ~= facingDirection.North) do
-		turtleUtil.TurnRightUtil()
+		turtleUtil.turnRightUtil()
 	end
 end
 

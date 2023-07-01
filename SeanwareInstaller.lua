@@ -1,4 +1,5 @@
 -- Shortened Raw Link: https://tinyurl.com/SeanWareInstaller
+-- wget run https://tinyurl.com/SeanWareInstaller
 
 local function InstallFromGit(repoFile, saveTo)
 local download = http.get("https://github.com/TrueBeef/CCLuaProjects/raw/main/" .. repoFile .. ".lua") --This will make 'download' hold the contents of the file.
