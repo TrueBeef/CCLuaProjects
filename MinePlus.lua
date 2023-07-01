@@ -4,7 +4,7 @@ turtleUtil = require("TurtleMovementUtil")
 local function MineLayer(LayerWidth, LayerLength, LayerDepth)	
 	local layW = tonumber(LayerWidth)
 	local layL = tonumber(LayerLength)	
-	local layD = tonumber(LayerDepth)	
+	local layD = tonumber(LayerDepth)
 
 	if(turtleUtil.moveForward() == false) then
 		turtle.dig()
@@ -34,7 +34,7 @@ local function MineLayer(LayerWidth, LayerLength, LayerDepth)
 			-- We want to mine down			
 			if(layD ~= 0 and z ~= math.abs(layD)) then			
 				--Go up 3 levels
-				turtleUtil.mineUp()
+				turtleUtil.mineDown()
 			end
 		end
 	end
@@ -62,7 +62,8 @@ function MinePLusInit ()
 	term.setCursorPos(1,2)
 	term.write("Width: " .. mineLayerWidth)
 	term.setCursorPos(1,3)
-	term.write("Should we mine above/below? \n(e.g 50 or -50)")
+	term.write("Should we mine above/below?")
+	term.write("(e.g 5 for up or -5 for down)")
 	term.setCursorPos(1,4)
 	mineLayerDepth = tonumber(read())
 
