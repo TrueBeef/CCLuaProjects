@@ -37,8 +37,8 @@ function ExcavateCustom ()
 		turtleUtil.returnHome()
 	end
 
-	while(currentFacingDir ~= facingDirection.North) do
-		turtleUtil.turnRightUtil()
+	while(turtleUtil.currentFacingDir ~= turtleUtil.facingDirection.North) do
+		turtleUtil.turnRight()
 	end
 end
 

@@ -227,7 +227,12 @@ return {
 	turnLeft = TurnLeftUtil,
 	mineForward = MineForwards,
 	mineLayer = MineLayer,
-	initGlobals = InitializeGlobals
+	initGlobals = InitializeGlobals,
+	currentFacingDir = currentFacingDir,
+	facingDirection = facingDirection,
+	localXPos = localXPos,
+	localYPos = localYPos,
+	localZPos = localZPos
 }
 
 	
