@@ -177,7 +177,7 @@ end
 
 local function GoToPosition(targetPos)
 	-- Travel Up or down
-	if(targetPos.z < 0) then		
+	if(targetPos.z > localPos.z) then		
 		while(localPos.z ~= targetPos.z) do
 			if(MoveUpUtil() == false) then
 				turtle.digUp()
@@ -191,27 +191,27 @@ local function GoToPosition(targetPos)
 		end
 	end
 
-	--Adjust X Pos
-	if(targetPos.x > 0) then		
+	--Adjust Y Pos
+	if(targetPos.y < localPos.y) then		
 		FaceDirection(facingDirection.West)
 	else
 		FaceDirection(facingDirection.East)
 	end
 
-	while(localPos.x ~= targetPos.x) do
+	while(localPos.y ~= targetPos.y) do
 		if(MoveForwardUtil() == false) then
 			turtle.dig()
 		end
 	end
 
-	--Adjust Y pos
-	if(localPos.y > 0) then		
+	--Adjust X pos
+	if(targetPos.x < localPos.x) then		
 		FaceDirection(facingDirection.South)	
 	else
 		FaceDirection(facingDirection.North)	
 	end
 
-	while(localPos.y ~= targetPos.y) do
+	while(localPos.x ~= targetPos.x) do
 		if(MoveForwardUtil() == false) then
 			turtle.dig()
 		end

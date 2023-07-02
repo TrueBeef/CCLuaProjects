@@ -12,7 +12,6 @@ local function MineLayer(LayerWidth, LayerLength, LayerDepth)
 
 		-- Handles the x and Y coords.
 		for y=1, layW, 1 do
-
 			if(turtleUtil.localPosition.x == 1) then			
 				--We are going to the end pos
 				for x=1, layL, 1 do
