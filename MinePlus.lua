@@ -1,8 +1,67 @@
 turtleUtil = require("TurtleMovementUtil")
 
-versionNumber = " -== Mine Plus v 1.0.5 ==- "
+versionNumber = " -== Mine Plus v 1.0.7 ==- "
 
-local function MineLayer(LayerWidth, LayerLength, LayerDepth)	
+local function MineLayerFromEnd(layW, layL)
+	-- Handles the x and Y coords.
+	for y=layW, 1, -1 do
+		local currentDirection, turtPos = turtleUtil.getLocalData()
+
+		if(turtPos.x == 1) then			
+			--We are going to the end pos
+			for x=1, layL, 1 do
+			
+				currentDirection, turtPos = turtleUtil.getLocalData()
+				local targetPos = vector.new(x, y - 1, turtPos.z)
+
+				turtleUtil.goToPos(targetPos)
+				turtle.digUp()
+				turtle.digDown()
+			end
+		elseif (turtPos.x == layL) then
+			for x=layL, 1, -1 do		
+					
+				local targetPos = vector.new(x, y - 1, turtPos.z)
+
+				turtleUtil.goToPos(targetPos)
+				turtle.digUp()
+				turtle.digDown()
+			end
+		end			
+	end
+end
+
+
+local function MineLayerFromStart(layW, layL)
+	-- Handles the x and Y coords.
+	for y=1, layW, 1 do
+		local currentDirection, turtPos = turtleUtil.getLocalData()
+
+		if(turtPos.x == 1) then			
+			--We are going to the end pos
+			for x=1, layL, 1 do
+			
+				currentDirection, turtPos = turtleUtil.getLocalData()
+				local targetPos = vector.new(x, y - 1, turtPos.z)
+
+				turtleUtil.goToPos(targetPos)
+				turtle.digUp()
+				turtle.digDown()
+			end
+		elseif (turtPos.x == layL) then
+			for x=layL, 1, -1 do		
+					
+				local targetPos = vector.new(x, y - 1, turtPos.z)
+
+				turtleUtil.goToPos(targetPos)
+				turtle.digUp()
+				turtle.digDown()
+			end
+		end			
+	end
+end
+
+local function Quarry(LayerWidth, LayerLength, LayerDepth)	
 	local layW = tonumber(LayerWidth)
 	local layL = tonumber(LayerLength)	
 	local layD = tonumber(LayerDepth)
@@ -10,35 +69,16 @@ local function MineLayer(LayerWidth, LayerLength, LayerDepth)
 	if(turtleUtil.moveForward() == false) then
 		turtle.dig()
 		turtleUtil.moveForward()
-	end
+	end	
 
 	for z=1, (math.abs(layD) + 1), 1 do
 
-		-- Handles the x and Y coords.
-		for y=1, layW, 1 do
-			local currentDirection, turtPos = turtleUtil.getLocalData()
-
-			if(turtPos.x == 1) then			
-				--We are going to the end pos
-				for x=1, layL, 1 do
-			
-					currentDirection, turtPos = turtleUtil.getLocalData()
-					local targetPos = vector.new(x, y - 1, turtPos.z)
-
-					turtleUtil.goToPos(targetPos)
-					turtle.digUp()
-					turtle.digDown()
-				end
-			elseif (turtPos.x == layL) then
-				for x=layL, 1, -1 do		
-					
-					local targetPos = vector.new(x, y - 1, turtPos.z)
-
-					turtleUtil.goToPos(targetPos)
-					turtle.digUp()
-					turtle.digDown()
-				end
-			end			
+		if(goBack == false) then
+			MineLayerFromStart(layW, layL)
+			goBack = true
+		else
+			MineLayerFromEnd(layW, layL)
+			goBack = false
 		end
 
 		-- Go up or go down?
@@ -113,7 +153,7 @@ function MinePLusInit ()
 	turtleUtil.initGlobals()
 	turtleUtil.fuelUp()
 
-	MineLayer(mineLayerWidth, mineLayerLength, mineLayerDepth)
+	Quarry(mineLayerWidth, mineLayerLength, mineLayerDepth)
 
 	if(returnHome == "y" or returnHome == "Y" or returnHome == "yes") then
 		local targetPos = vector.new(0, 0, 0)	

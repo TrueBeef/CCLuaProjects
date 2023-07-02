@@ -34,7 +34,6 @@ local function GetLocalPositionData()
 	return currentFacingDir, localPos
 end
 
-
 --This is stupid. fix later.
 local function FuelUp()
 	turtle.refuel()
