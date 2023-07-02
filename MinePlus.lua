@@ -1,6 +1,6 @@
 turtleUtil = require("TurtleMovementUtil")
 
-versionNumber = " -== Mine Plus v1.1.3 ==- "
+versionNumber = " -== Mine Plus v1.1.4 ==- "
 
 
 local function Return_FullInventory(leftOffPos)
