@@ -1,6 +1,7 @@
 -- Shortened Raw Link: https://tinyurl.com/SeanWareInstaller
 -- wget run https://tinyurl.com/SeanWareInstaller
 
+term.clear()
 term.setTextColor(colors.orange)
 print("~ SEANWARE Installer ~")
 print("Checking for updates.. ")
