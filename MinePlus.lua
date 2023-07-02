@@ -1,6 +1,68 @@
 turtleUtil = require("TurtleMovementUtil")
 
-versionNumber = " -== Mine Plus v 1.1.2 ==- "
+versionNumber = " -== Mine Plus v1.1.3 ==- "
+
+
+local function Return_FullInventory(leftOffPos)
+	term.clear()
+	term.setCursorPos(1,1)
+	term.write("Our inventory is close to full!")
+	term.setCursorPos(1,2)
+	term.write("Empty and press enter.")
+	term.setCursorPos(1,3)
+	turtleUtil.goToPos(vector.new(0, 0, 0))
+
+	read()
+
+	local totalItems, slotsWithItems = turtleUtil.checkInventory()
+	if(totalItems ~= 0) then
+		Return_FullInventory()
+	end
+
+	-- We're good to go.
+	turtleUtil.goToPos(leftOffPos)
+end
+
+
+local function Return_OutOfFuel(leftOffPos, costToHome)	
+	turtleUtil.goToPos(vector.new(0, 0, 0))	
+	print("Add fuel and press enter.")
+	
+	read()
+
+	for i=1,16 do
+		turtle.select(i)
+		turtle.refuel()
+	end
+
+	turtle.select(1)
+	
+	if(turtleUtil.checkFuel(costToHome)) then
+		Return_OutOfFuel()
+	end
+
+	-- We're good to go.
+	turtleUtil.goToPos(leftOffPos)
+end
+
+
+local function CheckResources()
+	local totalItems, slotsWithItems = turtleUtil.checkInventory()
+	local currentDirection, turtPos = turtleUtil.getLocalData() -- We need the current position so that we can come back if we end up going to refuel.
+
+	-- Check for inventory fullness
+	if(slotsWithItems >= 15) then
+		Return_FullInventory(turtPos)
+	end	
+
+	-- Check fuel levels
+	-- Calculate cost to get to home pos
+	costToHome = (turtPos.x + turtPos.y + turtPos.z + 1)
+	if(turtleUtil.checkFuel(costToHome) == true) then
+		Return_OutOfFuel(turtPos, costToHome)
+	end
+end
+
 
 local function MineLayerFromEnd(layW, layL)
 	-- Handles the x and Y coords.
@@ -17,6 +79,8 @@ local function MineLayerFromEnd(layW, layL)
 				turtleUtil.goToPos(targetPos)
 				turtle.digUp()
 				turtle.digDown()
+
+				CheckResources()
 			end
 		elseif (turtPos.x == layL) then
 			for x=layL, 1, -1 do		
@@ -26,8 +90,10 @@ local function MineLayerFromEnd(layW, layL)
 				turtleUtil.goToPos(targetPos)
 				turtle.digUp()
 				turtle.digDown()
+				
+				CheckResources()
 			end
-		end			
+		end	
 	end
 end
 
@@ -46,6 +112,8 @@ local function MineLayerFromStart(layW, layL)
 				turtleUtil.goToPos(targetPos)
 				turtle.digUp()
 				turtle.digDown()
+
+				CheckResources()
 			end
 		elseif (turtPos.x == layL) then
 			for x=layL, 1, -1 do		
@@ -55,54 +123,13 @@ local function MineLayerFromStart(layW, layL)
 				turtleUtil.goToPos(targetPos)
 				turtle.digUp()
 				turtle.digDown()
+				
+				CheckResources()
 			end
-		end			
+		end
+		
 	end
 end
-
-local function Return_FullInventory(leftOffPos)
-	term.clear()
-	term.setCursorPos(1,1)
-	term.write("Our inventory is close to full!")
-	term.setCursorPos(1,2)
-	term.write("Empty and press enter.")
-	term.setCursorPos(1,3)
-	goToPos(0, 0)
-
-	read()
-
-	local totalItems, slotsWithItems = turtleUtil.checkInventory()
-	if(totalItems ~= 0) then
-		Return_FullInventory()
-	end
-
-	-- We're good to go.
-	turtleUtil.goToPos(leftOffPos)
-end
-
-
-local function Return_OutOfFuel(leftOffPos, costToHome)	
-	goToPos(0, 0)	
-	print("Add fuel and press enter.")
-	
-	read()
-
-	for i=1,16 do
-		turtle.select(i)
-		turtle.refuel()
-	end
-
-	turtle.select(1)
-	
-	if(turtleUtil.checkFuel(costToHome)) then
-		Return_OutOfFuel()
-	end
-
-	-- We're good to go.
-	turtleUtil.goToPos(leftOffPos)
-
-end
-
 
 local function Quarry(LayerWidth, LayerLength, LayerDepth)	
 	local layW = tonumber(LayerWidth)
@@ -141,22 +168,7 @@ local function Quarry(LayerWidth, LayerLength, LayerDepth)
 				turtleUtil.mineDown()
 				-- turtleUtil.mineForward(2)
 			end
-		end
-
-		local totalItems, slotsWithItems = turtleUtil.checkInventory()
-		local currentDirection, turtPos = turtleUtil.getLocalData() -- We need the current position so that we can come back if we end up going to refuel.
-
-		-- Check for inventory fullness
-		if(slotsWithItems >= 15) then
-			Return_FullInventory(turtPos)
-		end	
-
-		-- Check fuel levels
-		-- Calculate cost to get to home pos
-		costToHome = (turtPos.x + turtPos.y + turtPos.z + 1)
-		if(turtleUtil.checkFuel(costToHome) == true) then
-			Return_OutOfFuel(turtPos, costToHome)
-		end
+		end		
 	end	
 end
 
