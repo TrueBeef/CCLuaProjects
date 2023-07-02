@@ -39,20 +39,37 @@ local function FuelUp()
 	turtle.refuel()
 end
 
+-- Returns true if we need more fuel. false of all is well.
 local function CheckFuel (MovementSteps)
 	local fuelRemaining = turtle.getFuelLevel()
-	if(fuelRemaining ~= "unlimited" and fuelRemaining < (MovementSteps + 5)) then
+	if(fuelRemaining ~= "unlimited" and fuelRemaining < (MovementSteps + 10)) then
 		term.clear()
-		print("We ran out of fuel!")
-		ReturnHome()
+		term.setCursorPos(1,1)
+		term.setTextColor(colors.red)
+		term.write("We are almost out of fuel!")
+		term.setCursorPos(1,2)
+		term.write("Current Fuel: " .. turtle.getFuelLevel())
+		term.setCursorPos(1,3)
+		return true
+	else
+		return false
 	end
 end
 
-local function CheckInventoryFullnes ()
-	local emptySlots = 0
-	local fullness = 0
-
 -- Check if the inventory is full or not.
+local function CheckInventoryFullnes ()
+	local totalItems = 0
+	local slotsWithItems = 0
+
+	for i=1,16 do
+		turtle.select(i)
+		if(turtle.getItemCount() ~= 0)
+			slotsWithItems = slotsWithItems + 1
+			totalItems = totalItems + getItemCount()
+		end
+	end
+
+	return totalItems, slotsWithItems
 end
 
 -- Moves the turtle while also tallying what directions we've moved
@@ -250,6 +267,7 @@ return {
 	mineDown = MineDownUtil,
 	mineUp = MineUpUtil,	
 	goToPos = GoToPosition,	
+	checkInventory = CheckInventoryFullnes,
 	getLocalData = GetLocalPositionData,
 	direction = facingDirection,	
 }

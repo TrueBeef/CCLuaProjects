@@ -31,7 +31,6 @@ local function MineLayerFromEnd(layW, layL)
 	end
 end
 
-
 local function MineLayerFromStart(layW, layL)
 	-- Handles the x and Y coords.
 	for y=1, layW, 1 do
@@ -61,10 +60,52 @@ local function MineLayerFromStart(layW, layL)
 	end
 end
 
+local function Return_FullInventory()
+if(totalItems ~= 0) then		
+		term.clear()
+		term.setCursorPos(1,1)
+		term.write("Our inventory is close to full!")
+		term.setCursorPos(1,2)
+		term.write("Empty and press enter.")
+		term.setCursorPos(1,3)
+		goToPos(0, 0)
+
+		read()
+
+		local totalItems, slotsWithItems = turtleUtil.checkInventory()
+		if(totalItems ~= 0) then
+			Return_FullInventory()
+		end	
+	end
+end
+
+local function Return_OutOfFuel()
+	if(turtleUtil.checkFuel) then
+		goToPos(0, 0)	
+		print("Add fuel and press enter.")
+	
+		read()
+
+		for i=1,16 do
+			turtle.select(i)
+			turtle.refuel()
+		end
+
+		turtle.select(1)
+	
+		if(turtleUtil.checkFuel) then
+			Return_OutOfFuel()
+		end
+	end
+end
+
 local function Quarry(LayerWidth, LayerLength, LayerDepth)	
 	local layW = tonumber(LayerWidth)
 	local layL = tonumber(LayerLength)	
 	local layD = tonumber(LayerDepth)
+
+	local leftOffPos = vector(0, 0, 0)
+	local leftOffZ = 0
 
 	if(turtleUtil.moveForward() == false) then
 		turtle.dig()
@@ -99,6 +140,19 @@ local function Quarry(LayerWidth, LayerLength, LayerDepth)
 				-- turtleUtil.mineForward(2)
 			end
 		end
+
+		local totalItems, slotsWithItems = turtleUtil.checkInventory()
+
+		if(slotsWithItems >= 15) then
+			
+		end
+
+		-- Check for inventory fullness
+		Return_FullInventory()
+
+		-- Check fuel levels
+		Return_OutOfFuel()
+
 	end	
 end
 
