@@ -71,6 +71,27 @@ local function CheckInventoryFullnes ()
 	return totalItems, slotsWithItems
 end
 
+local function MoveBackwardUtil()
+	if(turtle.back()) then
+		if(currentFacingDir == facingDirection.North) then
+			-- Sub to X Coord
+			localPos = localPos - vector.new(1, 0, 0)
+		elseif(currentFacingDir == facingDirection.South) then
+			-- Add X Coord
+			localPos = localPos + vector.new(1, 0, 0)
+		elseif(currentFacingDir == facingDirection.East) then
+			-- Subtract Y coord
+			localPos = localPos - vector.new(0, 1, 0)
+		else
+			-- Add to Y coord
+			localPos = localPos + vector.new(0, 1, 0)
+		end
+		return true
+	else
+		return false
+	end
+end
+
 -- Moves the turtle while also tallying what directions we've moved
 local function MoveForwardUtil()
 	if(turtle.forward()) then
@@ -256,6 +277,7 @@ return {
 	fuelUp = FuelUp,
 	checkFuel = CheckFuel,
 	moveForward = MoveForwardUtil,
+	moveBackward = MoveBackwardUtil,
 	moveUp = MoveUpUtil,
 	moveDown = MoveDownUtil,	
 	turnRight = TurnRightUtil,
