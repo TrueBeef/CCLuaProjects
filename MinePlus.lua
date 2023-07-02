@@ -111,7 +111,7 @@ function MinePLusInit ()
 	MineLayer(mineLayerWidth, mineLayerLength, mineLayerDepth)
 
 	if(returnHome == "y" or returnHome == "Y" or returnHome == "yes") then
-		local targetPos = new vector(0, 0, 0)	
+		local targetPos = vector.new(0, 0, 0)	
 		turtleUtil.goToPos(targetPos)
 		turtleUtil.faceDirection(turtleUtil.direction.North)
 	end
