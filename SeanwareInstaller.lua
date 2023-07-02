@@ -4,6 +4,7 @@
 term.clear()
 term.setCursorPos(1, 1)
 term.setTextColor(colors.orange)
+print("")
 print("~ SEANWARE Installer ~")
 print("Checking for updates.. ")
 

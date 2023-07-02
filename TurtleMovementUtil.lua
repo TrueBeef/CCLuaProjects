@@ -30,6 +30,11 @@ local function LoadLocalPositioning()
 	
 end
 
+local function GetLocalPositionData()
+	return currentFacingDir, localPos
+end
+
+
 --This is stupid. fix later.
 local function FuelUp()
 	turtle.refuel()
@@ -233,10 +238,9 @@ return {
 	mineForward = MineForwards,	
 	mineDown = MineDownUtil,
 	mineUp = MineUpUtil,	
-	goToPos = GoToPosition,
-	currentFacingDir = currentFacingDir,
-	direction = facingDirection,
-	localPosition = localPos
+	goToPos = GoToPosition,	
+	getLocalData = GetLocalPositionData,
+	direction = facingDirection,	
 }
 
 	
