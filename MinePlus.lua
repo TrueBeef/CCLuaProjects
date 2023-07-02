@@ -18,8 +18,9 @@ local function MineLayer(LayerWidth, LayerLength, LayerDepth)
 				for x=1, layL, 1 do
 			
 					local turtPos = turtleUtil.localPosition
+					local targetPos = vector.new(x, y, turtPos.z)
 
-					turtleUtil.goToPos(vector.new(x, y, turtPos.z))
+					turtleUtil.goToPos(targetPos)
 					turtle.digUp()
 					turtle.digDown()
 				end
@@ -27,13 +28,13 @@ local function MineLayer(LayerWidth, LayerLength, LayerDepth)
 				for x=layL, 1, -1 do
 			
 					local turtPos = turtleUtil.localPosition
+					local targetPos = vector.new(x, y, turtPos.z)
 
-					turtleUtil.goToPos(vector.new(x, y, turtPos.z))
+					turtleUtil.goToPos(targetPos)
 					turtle.digUp()
 					turtle.digDown()
 				end
-			end
-			
+			end			
 		end
 
 		-- Go up or go down?
@@ -52,12 +53,7 @@ local function MineLayer(LayerWidth, LayerLength, LayerDepth)
 				-- turtleUtil.mineForward(2)
 			end
 		end
-	end
-
-	if(returnHome == "y" or returnHome == "Y" or returnHome == "yes") then
-		turtleUtil.goToPos(0, 0)
-		turtleUtil.faceDirection(turtleUtil.direction.North)
-	end
+	end	
 end
 
 function MinePLusInit ()
@@ -114,9 +110,12 @@ function MinePLusInit ()
 
 	MineLayer(mineLayerWidth, mineLayerLength, mineLayerDepth)
 
-	if(returnHome == "y") then
-		turtleUtil.returnHome()
-	end	
+	if(returnHome == "y" or returnHome == "Y" or returnHome == "yes") then
+		local targetPos = new vector(0, 0, 0)	
+		turtleUtil.goToPos(targetPos)
+		turtleUtil.faceDirection(turtleUtil.direction.North)
+	end
+	
 end
 
 MinePLusInit()
