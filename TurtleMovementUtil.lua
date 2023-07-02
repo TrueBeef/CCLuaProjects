@@ -136,11 +136,17 @@ local function FaceDirection(targDirection)
 	while(currentFacingDir ~= targDirection) do
 		if(currentFacingDir == facingDirection.North and targDirection == facingDirection.West) then
 			TurnLeftUtil()
-		elseif(currentFacingDir == facingDirection.West and targDirection == facingDirection.North) then
+		end
+		
+		if(currentFacingDir == facingDirection.West and targDirection == facingDirection.North) then
 			TurnRightUtil()
-		elseif(targDirection < (currentFacingDir)) then
+		end
+		
+		if (targDirection < (currentFacingDir)) then
 			TurnLeftUtil()
-		elseif (currentFacingDir ~= targDirection) then
+		end
+
+		if (targDirection > (currentFacingDir)) then
 			TurnRightUtil()
 		end
 	end	
@@ -192,7 +198,7 @@ local function GoToPosition(targetPos)
 				turtle.digUp()
 			end
 		end
-	else
+	elseif (targetPos.z ~= localPos.z) then
 		while(localPos.z ~= targetPos.z) do
 			if(MoveDownUtil() == false) then
 				turtle.digDown()
@@ -203,7 +209,7 @@ local function GoToPosition(targetPos)
 	--Adjust Y Pos
 	if(targetPos.y < localPos.y) then		
 		FaceDirection(facingDirection.West)
-	else
+	elseif (targetPos.y ~= localPos.y) then
 		FaceDirection(facingDirection.East)
 	end
 
@@ -216,7 +222,7 @@ local function GoToPosition(targetPos)
 	--Adjust X pos
 	if(targetPos.x < localPos.x) then		
 		FaceDirection(facingDirection.South)	
-	else
+	elseif (targetPos.x ~= localPos.x) then
 		FaceDirection(facingDirection.North)	
 	end
 
