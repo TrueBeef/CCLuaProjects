@@ -11,15 +11,29 @@ local function MineLayer(LayerWidth, LayerLength, LayerDepth)
 	for z=1,layD, 1 do
 
 		-- Handles the x and Y coords.
-		for x=1, layL, 1 do
-			for y=1, layW, 1 do
-			
-				local turtPos = turtleUtil.localPosition
+		for y=1, layW, 1 do
 
-				turtleUtil.goToPos(vector.new(x, y, turtPos.z))
-				turtle.digUp()
-				turtle.digDown()
+			if(turtleUtil.localPosition.x == 1) then			
+				--We are going to the end pos
+				for x=1, layL, 1 do
+			
+					local turtPos = turtleUtil.localPosition
+
+					turtleUtil.goToPos(vector.new(x, y, turtPos.z))
+					turtle.digUp()
+					turtle.digDown()
+				end
+			elseif (turtleUtil.localPosition.x == layL) then
+				for x=layL, 1, -1 do
+			
+					local turtPos = turtleUtil.localPosition
+
+					turtleUtil.goToPos(vector.new(x, y, turtPos.z))
+					turtle.digUp()
+					turtle.digDown()
+				end
 			end
+			
 		end
 
 		-- Go up or go down?
