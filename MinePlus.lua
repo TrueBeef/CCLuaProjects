@@ -53,6 +53,11 @@ local function MineLayer(LayerWidth, LayerLength, LayerDepth)
 			end
 		end
 	end
+
+	if(returnHome == "y" or returnHome == "Y" or returnHome == "yes") then
+		turtleUtil.goToPos(0, 0)
+		turtleUtil.faceDirection(turtleUtil.direction.North)
+	end
 end
 
 function MinePLusInit ()
