@@ -71,6 +71,8 @@ local function Quarry(LayerWidth, LayerLength, LayerDepth)
 		turtleUtil.moveForward()
 	end	
 
+	local goBack = false
+
 	for z=1, (math.abs(layD) + 1), 1 do
 
 		if(goBack == false) then
