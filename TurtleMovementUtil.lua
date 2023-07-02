@@ -140,7 +140,7 @@ local function FaceDirection(targDirection)
 			TurnRightUtil()
 		elseif(targDirection < (currentFacingDir)) then
 			TurnLeftUtil()
-		else
+		elseif (currentFacingDir ~= targDirection) then
 			TurnRightUtil()
 		end
 	end	
