@@ -8,7 +8,7 @@ local function MineLayer(LayerWidth, LayerLength, LayerDepth)
 		turtle.dig()
 		turtleUtil.moveForward()
 	end
-	for z=1,layD, 1 do
+	for z=1, math.abs(layD), 1 do
 
 		-- Handles the x and Y coords.
 		for y=1, layW, 1 do
