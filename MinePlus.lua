@@ -1,6 +1,6 @@
 turtleUtil = require("TurtleMovementUtil")
 
-
+versionNumber = " -== Mine Plus v 1.0.1 ==- "
 
 local function MineLayer(LayerWidth, LayerLength, LayerDepth)	
 	local layW = tonumber(LayerWidth)
@@ -62,11 +62,11 @@ end
 function MinePLusInit ()
 	term.clear()
 	term.setCursorPos(1,1)
-	print(" -== Mine Plus v 1.0.0 ==-")
-	term.write("How Far Forward do you want to mine?")
+	term.write(versionNumber)
 	term.setCursorPos(1,2)
+	term.write("How Far Forward do you want to mine?")
+	term.setCursorPos(1,3)
 	mineLayerLength = tonumber(read())
-
 	
 	term.clear()		
 	term.setCursorPos(1,1)
