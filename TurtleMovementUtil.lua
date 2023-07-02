@@ -136,7 +136,7 @@ local function FaceDirection(targDirection)
 	while(currentFacingDir ~= targDirection) do
 		if(currentFacingDir == facingDirection.North and targDirection == facingDirection.West) then
 			TurnLeftUtil()
-		elseif(currentFacingDir == facingDirection.West and targDirection == facingDirection.North)
+		elseif(currentFacingDir == facingDirection.West and targDirection == facingDirection.North) then
 			TurnRightUtil()
 		elseif(targDirection < (currentFacingDir)) then
 			TurnLeftUtil()
