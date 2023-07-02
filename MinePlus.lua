@@ -1,4 +1,7 @@
 turtleUtil = require("TurtleMovementUtil")
+
+print(" -== Mine Plus v 1.0 ==-")
+
 local function MineLayer(LayerWidth, LayerLength, LayerDepth)	
 	local layW = tonumber(LayerWidth)
 	local layL = tonumber(LayerLength)	
