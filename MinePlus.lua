@@ -81,7 +81,7 @@ local function Return_FullInventory(leftOffPos)
 end
 
 
-local function Return_OutOfFuel(leftOffPos)	
+local function Return_OutOfFuel(leftOffPos, costToHome)	
 	goToPos(0, 0)	
 	print("Add fuel and press enter.")
 	
@@ -94,7 +94,7 @@ local function Return_OutOfFuel(leftOffPos)
 
 	turtle.select(1)
 	
-	if(turtleUtil.checkFuel()) then
+	if(turtleUtil.checkFuel(costToHome)) then
 		Return_OutOfFuel()
 	end
 
@@ -152,8 +152,10 @@ local function Quarry(LayerWidth, LayerLength, LayerDepth)
 		end	
 
 		-- Check fuel levels
-		if(turtleUtil.checkFuel() == true) then
-			Return_OutOfFuel(turtPos)
+		-- Calculate cost to get to home pos
+		costToHome = (turtPos.x + turtPos.y + turtPos.z + 1)
+		if(turtleUtil.checkFuel(costToHome) == true) then
+			Return_OutOfFuel(turtPos, costToHome)
 		end
 	end	
 end
