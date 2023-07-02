@@ -156,17 +156,19 @@ end
 -- a block is above, in front, and below 
 -- the turtle.
 local function MineDownUtil()
-	for i=0,4 do
+	for i=1,4 do
 		if(MoveDownUtil() == false) then
 			turtle.digDown()
+			MoveDownUtil()
 		end
 	end
 end
 
 local function MineUpUtil()
-	for i=0,4 do
+	for i=1,4 do
 		if(MoveUpUtil() == false) then
 			turtle.digUp()
+			MoveUpUtil()
 		end
 	end
 end
