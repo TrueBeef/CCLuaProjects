@@ -63,7 +63,7 @@ local function CheckInventoryFullnes ()
 
 	for i=1,16 do
 		turtle.select(i)
-		if(turtle.getItemCount() ~= 0)
+		if(turtle.getItemCount() ~= 0) then
 			slotsWithItems = slotsWithItems + 1
 			totalItems = totalItems + getItemCount()
 		end
