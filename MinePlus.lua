@@ -22,7 +22,7 @@ local function MineLayer(LayerWidth, LayerLength, LayerDepth)
 				for x=1, layL, 1 do
 			
 					currentDirection, turtPos = turtleUtil.getLocalData()
-					local targetPos = vector.new(x, y, turtPos.z)
+					local targetPos = vector.new(x, y - 1, turtPos.z)
 
 					turtleUtil.goToPos(targetPos)
 					turtle.digUp()
@@ -31,7 +31,7 @@ local function MineLayer(LayerWidth, LayerLength, LayerDepth)
 			elseif (turtPos.x == layL) then
 				for x=layL, 1, -1 do		
 					
-					local targetPos = vector.new(x, y, turtPos.z)
+					local targetPos = vector.new(x, y - 1, turtPos.z)
 
 					turtleUtil.goToPos(targetPos)
 					turtle.digUp()
