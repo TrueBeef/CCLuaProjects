@@ -55,17 +55,17 @@ end
 local function MoveForwardUtil()
 	if(turtle.forward()) then
 		if(currentFacingDir == facingDirection.North) then
-			-- Add to Y Coord
-			localPos = localPos + vector.new(0, 1, 0)
-		elseif(currentFacingDir == facingDirection.South) then
-			-- Subtract Y Coord
-			localPos = localPos - vector.new(0, 1, 0)
-		elseif(currentFacingDir == facingDirection.East) then
-			-- Add to X coord
+			-- Add to X Coord
 			localPos = localPos + vector.new(1, 0, 0)
-		else
-			-- Subtract X coord
+		elseif(currentFacingDir == facingDirection.South) then
+			-- Subtract X Coord
 			localPos = localPos - vector.new(1, 0, 0)
+		elseif(currentFacingDir == facingDirection.East) then
+			-- Add to Y coord
+			localPos = localPos + vector.new(0, 1, 0)
+		else
+			-- Subtract Y coord
+			localPos = localPos - vector.new(0, 1, 0)
 		end
 		return true
 	else
