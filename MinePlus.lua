@@ -1,6 +1,6 @@
 turtleUtil = require("TurtleMovementUtil")
 
-versionNumber = " -== Mine Plus v 1.1.0 ==- "
+versionNumber = " -== Mine Plus v 1.1.2 ==- "
 
 local function MineLayerFromEnd(layW, layL)
 	-- Handles the x and Y coords.
