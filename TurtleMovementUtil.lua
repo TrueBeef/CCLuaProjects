@@ -8,14 +8,14 @@ miningQuadrant = { Left = 0, Right = 1}
 mineLayerWidth = 0
 mineLayerLength = 0
 
-localPos = new(0, 0, 0)
+localPos = vector.new(0, 0, 0)
 
 lastTurnDir = turnDirection.None
 currentFacingDir = facingDirection.North
 
 local function InitializeGlobals()
 	-- Prolly dont need to do these but eh
-	localPos = new(0, 0, 0)
+	localPos = vector.new(0, 0, 0)
 
 	lastTurnDir = turnDirection.None
 	currentFacingDir = facingDirection.North
@@ -56,16 +56,16 @@ local function MoveForwardUtil()
 	if(turtle.forward()) then
 		if(currentFacingDir == facingDirection.North) then
 			-- Add to Y Coord
-			localPos = localPos + new(0, 1, 0)
+			localPos = localPos + vector.new(0, 1, 0)
 		elseif(currentFacingDir == facingDirection.South) then
 			-- Subtract Y Coord
-			localPos = localPos - new(0, 1, 0)
+			localPos = localPos - vector.new(0, 1, 0)
 		elseif(currentFacingDir == facingDirection.East) then
 			-- Add to X coord
-			localPos = localPos + new(1, 0, 0)
+			localPos = localPos + vector.new(1, 0, 0)
 		else
 			-- Subtract X coord
-			localPos = localPos - new(1, 0, 0)
+			localPos = localPos - vector.new(1, 0, 0)
 		end
 		return true
 	else
@@ -76,7 +76,7 @@ end
 local function MoveUpUtil()
 	if(turtle.up()) then
 		-- Add Z coord
-		localPos = localPos + new(0, 0, 1)
+		localPos = localPos + vector.new(0, 0, 1)
 		return true
 	else
 		return false
@@ -86,7 +86,7 @@ end
 local function MoveDownUtil()
 	if(turtle.down()) then
 		-- Subtract Z coord
-		localPos = localPos - new(0, 0, 1)
+		localPos = localPos - vector.new(0, 0, 1)
 	else
 		return false
 	end	

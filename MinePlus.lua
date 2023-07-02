@@ -9,12 +9,14 @@ local function MineLayer(LayerWidth, LayerLength, LayerDepth)
 		turtleUtil.moveForward()
 	end
 	for z=1,layD, 1 do
+
+		-- Handles the x and Y coords.
 		for x=1, layL, 1 do
 			for y=1, layW, 1 do
 			
 				local turtPos = turtleUtil.localPosition
 
-				turtleUtil.goToPos(new(x, y, turtPos.z))
+				turtleUtil.goToPos(vector.new(x, y, turtPos.z))
 				turtle.digUp()
 				turtle.digDown()
 			end
