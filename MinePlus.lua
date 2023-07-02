@@ -9,7 +9,7 @@ local function Return_FullInventory(leftOffPos)
 	term.write("Our inventory is close to full!")
 	term.setCursorPos(1,2)
 	term.write("Empty and press enter.")
-	term.setCursorPos(1,3)s
+	term.setCursorPos(1,3)
 	turtleUtil.goToPos(vector.new(0, 0, 0))
 
 	read()
