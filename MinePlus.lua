@@ -1,6 +1,6 @@
 turtleUtil = require("TurtleMovementUtil")
 
-versionNumber = " -== Mine Plus v1.1.11 ==- "
+versionNumber = " -== Mine Plus v1.1.12 ==- "
 
 local function Return_DoneMining()
 	term.clear()
@@ -172,10 +172,12 @@ local function MineLayer(layMaxW, layMaxL, layMaxD)
 		end
 	else
 		if(turtlePos.x == layMaxL) then
-			local targetPos = vector.new(turtlePos.x, turtlePos.y, turtlePos.z)
+			turtle.digUp()
+			turtle.digDown()
+			targetPos = vector.new(turtlePos.x - 1, turtlePos.y, turtlePos.z)
 			currentDirection, turtlPos = TravelAndMine(targetPos)
-		else
-			local targetPos = vector.new(turtlePos.x - 1, turtlePos.y, turtlePos.z)
+		elseif(turtlePos.x > 1) then
+			local targetPos = vector.new(turtlePos.x + 1, turtlePos.y, turtlePos.z)
 			currentDirection, turtlPos = TravelAndMine(targetPos)
 		end
 
@@ -185,9 +187,13 @@ local function MineLayer(layMaxW, layMaxL, layMaxD)
 			-- Check if we're going up or down
 			-- We use a mod of 6 since the turtle goes down 3 blocks every layer
 			if(math.fmod(math.abs(turtlePos.z), 6) == 0) then
-				targetPos = vector.new(turtlePos.x, turtlePos.y + 1, turtlePos.z)
+				if(turtlePos.y < layMaxW) then
+					targetPos = vector.new(turtlePos.x, turtlePos.y + 1, turtlePos.z)
+				end
 			else
-				targetPos = vector.new(turtlePos.x, turtlePos.y - 1, turtlePos.z)
+				if(turtlePos.y > 0) then
+					targetPos = vector.new(turtlePos.x, turtlePos.y - 1, turtlePos.z)
+				end
 			end
 
 			currentDirection, turtlPos = TravelAndMine(targetPos)
