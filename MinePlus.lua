@@ -1,6 +1,6 @@
 turtleUtil = require("TurtleMovementUtil")
 
-versionNumber = " -== Mine Plus v1.1.13 ==- "
+versionNumber = " -== Mine Plus v1.1.14 ==- "
 
 local function Return_DoneMining()
 	term.clear()
@@ -117,7 +117,7 @@ local function CheckIfAtEnd(layMaxW, layMaxL, layMaxD)
 	if(math.fmod(math.abs(turtlePos.z), 6) == 0) then
 		if(turtlePos.y == layMaxW) then
 			-- Are we supposed to be at the top or bottom?
-			if(math.fmod(layMaxW.y, 2) == 0 and turtlePos.x == layMaxW) then
+			if(math.fmod(layMaxW.y, 2) == 0 and turtlePos.x == layMaxL) then
 				--We are at the correct point. Dig down and start a new layer.
 				return true
 			elseif(math.fmod(layMaxW.y, 2) ~= 0 and turtlePos.x == 1) then
@@ -282,7 +282,7 @@ function MinePLusInit ()
 	turtleUtil.fuelUp()
 	CheckResources()
 
-	Quarry(mineLayerWidth, mineLayerLength, mineLayerDepth)
+	Quarry(mineLayerWidth - 1, mineLayerLength, mineLayerDepth)
 
 	if(returnHome == "y" or returnHome == "Y" or returnHome == "yes") then
 		Return_DoneMining()
