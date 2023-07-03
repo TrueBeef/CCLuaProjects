@@ -1,6 +1,6 @@
 turtleUtil = require("TurtleMovementUtil")
 
-versionNumber = " -== Mine Plus v1.1.15 ==- "
+versionNumber = " -== Mine Plus v1.1.16 ==- "
 
 local function Return_DoneMining()
 	term.clear()
@@ -201,6 +201,7 @@ local function MineLayer(layMaxW, layMaxL, layMaxD)
 	end
 
 	
+	print("x: " .. turtlPos.x .. ", y: " .. turtlPos.y .. ", z: " turtlPos.z)
 	
 	-- Handle depth
 	if(CheckIfAtEnd() == true) then
