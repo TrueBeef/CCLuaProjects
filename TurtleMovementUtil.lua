@@ -1,6 +1,12 @@
 
 -- More advanced turtle helpers that can be used to make full programs
+-- Uses Lightweight Json Library by rxi. Thanks dude.
+-- https://github.com/rxi/json.lua
+-- json.encode({ 1, 2, 3, { x = 10 } }) -- Returns '[1,2,3,{"x":10}]'
+-- json.decode('[1,2,3,{"x":10}]') -- Returns { 1, 2, 3, { x = 10 } }
+json = require("json")
 
+-- Globals --
 turnDirection = { None = 0, Left = 1, Right = 2 }
 facingDirection = { North = 1, East = 2, South = 3, West = 4 }
 miningQuadrant = { Left = 0, Right = 1}

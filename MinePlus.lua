@@ -1,7 +1,15 @@
 turtleUtil = require("TurtleMovementUtil")
 
-versionNumber = " -== Mine Plus v1.1.5 ==- "
+versionNumber = " -== Mine Plus v1.1.10 ==- "
 
+local function Return_DoneMining()
+	term.clear()
+	term.setCursorPos(1,1)
+	term.write("We're done mining!'")
+	term.setCursorPos(1,2)
+	
+	turtleUtil.goToPos(vector.new(0, 0, 0))	
+end
 
 local function Return_FullInventory(leftOffPos)
 	term.clear()
@@ -31,6 +39,7 @@ local function Return_OutOfFuel(leftOffPos, costToHome)
 	
 	read()
 
+	-- Attempt to refuel with anything in the inventory
 	for i=1,16 do
 		turtle.select(i)
 		turtle.refuel()
@@ -49,89 +58,126 @@ end
 
 local function CheckResources()
 	local totalItems, slotsWithItems = turtleUtil.checkInventory()
-	local currentDirection, turtPos = turtleUtil.getLocalData() -- We need the current position so that we can come back if we end up going to refuel.
+	local currentDirection, turtlePos = turtleUtil.getLocalData() -- We need the current position so that we can come back if we end up going to refuel.
 
 	-- Check for inventory fullness
 	if(slotsWithItems >= 15) then
-		Return_FullInventory(turtPos)
+		Return_FullInventory(turtlePos)
 	end	
 
 	-- Check fuel levels
 	-- Calculate cost to get to home pos
-	costToHome = (turtPos.x + turtPos.y + turtPos.z + 1)
+	costToHome = (turtlePos.x + turtlePos.y + turtlePos.z + 1)
 	if(turtleUtil.checkFuel(costToHome) == true) then
-		Return_OutOfFuel(turtPos, costToHome)
+		Return_OutOfFuel(turtlePos, costToHome)
 	end
 end
 
 local function FindBottom()
-	
+	moveDown = true
+
+	while (moveDown) do
+		moveDown = turtleUtil.moveDown()
+	end
+
+	return true		
 end
 
-local function MineLayerFromEnd(layW, layL)
-	-- Handles the x and Y coords.
-	for y=layW, 1, -1 do
-		local currentDirection, turtPos = turtleUtil.getLocalData()
+local function TravelAndMineZ(desiredDepth)
+	local currentDirection, turtlePos = turtleUtil.getLocalData()
+	
+	if(desiredDepth > 0 and turtlePos.z < desiredDepth) then
+		turtleUtil.mineUp()
+		return true
+	end
 
-		if(turtPos.x == 1) then			
-			--We are going to the end pos
-			for x=1, layL, 1 do
-			
-				currentDirection, turtPos = turtleUtil.getLocalData()
-				local targetPos = vector.new(x, y - 1, turtPos.z)
+	if(desiredDepth < 0 and turtlePos.z > desiredDepth) then
+		turtleUtil.mineDown()
+		return true
+	end			
 
-				turtleUtil.goToPos(targetPos)
-				turtle.digUp()
-				turtle.digDown()
+	return false
+end
 
-				CheckResources()
-			end
-		elseif (turtPos.x == layL) then
-			for x=layL, 1, -1 do		
-					
-				local targetPos = vector.new(x, y - 1, turtPos.z)
 
-				turtleUtil.goToPos(targetPos)
-				turtle.digUp()
-				turtle.digDown()
-				
-				CheckResources()
+local function TravelAndMine(travelPos)
+	local targetPos = vector.new(travelPos.x, travelPos.y, travelPos.z)
+	turtleUtil.goToPos(targetPos)
+	turtle.digUp()
+	turtle.digDown()
+	CheckResources()
+end
+
+
+local function CheckIfAtEnd(layMaxW, layMaxL, layMaxD)
+	local currentDirection, turtlePos = turtleUtil.getLocalData()
+	if(math.fmod(math.abs(turtlePos.z), 6) == 0) then
+		if(turtlePos.y == layMaxW) then
+			-- Are we supposed to be at the top or bottom?
+			if(math.fmod(layMaxW.y, 2) == 0 and turtlePos.x == layMaxW) then
+				--We are at the correct point. Dig down and start a new layer.
+				return true
+			elseif(math.fmod(layMaxW.y, 2) ~= 0 and turtlePos.x == 1) then
+				--We are at the correct point. Dig down and start a new layer.	
+				return true
 			end
 		end	
-	end
+	else	
+		-- We know we started here going forward so the 'End point' is right where we started; y0 x1.
+		if(turtlePos.y == 0 and turtlePos.x = 1) then
+			return true
+		end
+	end	
+
+	return false
 end
 
-local function MineLayerFromStart(layW, layL)
-	-- Handles the x and Y coords.
-	for y=1, layW, 1 do
-		local currentDirection, turtPos = turtleUtil.getLocalData()
 
-		if(turtPos.x == 1) then			
-			--We are going to the end pos
-			for x=1, layL, 1 do
-			
-				currentDirection, turtPos = turtleUtil.getLocalData()
-				local targetPos = vector.new(x, y - 1, turtPos.z)
-
-				turtleUtil.goToPos(targetPos)
-				turtle.digUp()
-				turtle.digDown()
-
-				CheckResources()
-			end
-		elseif (turtPos.x == layL) then
-			for x=layL, 1, -1 do		
-					
-				local targetPos = vector.new(x, y - 1, turtPos.z)
-
-				turtleUtil.goToPos(targetPos)
-				turtle.digUp()
-				turtle.digDown()
-				
-				CheckResources()
-			end
-		end
+local function MineLayer(layMaxW, layMaxL, layMaxD)
+	local currentDirection, turtlePos = turtleUtil.getLocalData()
+	
+	-- Mine forwards and backwards based on the current Y coord.
+	-- Every other column we swap which direction we're going. Thus the modulo.
+	-- Y Starts at zero.
+	if(math.fmod(turtlePos.y, 2) == 0) then
+		local targetPos = vector.new(turtlePos.x + 1, turtlePos.y, turtlePos.z)
+		TravelAndMine(targetPos)
 		
+		-- We need to increase/decrase our Y coord
+		if(turtlePos.x == layMaxL) then		
+			-- Check if we're going up or down
+			-- We use a mod of 6 since the turtle goes down 3 blocks every layer
+			-- Every other layer we swap which direction we're going. Thus the modulo.
+			if(math.fmod(math.abs(turtlePos.z), 6) == 0) then
+				targetPos = vector.new(turtlePos.x, turtlePos.y + 1, turtlePos.z)
+			else
+				targetPos = vector.new(turtlePos.x, turtlePos.y - 1, turtlePos.z)
+			end
+
+			TravelAndMine(targetPos)
+		end
+	else
+		local targetPos = vector.new(turtlePos.x - 1, turtlePos.y, turtlePos.z)
+		TravelAndMine(targetPos)
+
+		-- We need to increase/decrase our Y coord
+		-- X Starts at 1
+		if(turtlePos.x == 1) then		
+			-- Check if we're going up or down
+			-- We use a mod of 6 since the turtle goes down 3 blocks every layer
+			if(math.fmod(math.abs(turtlePos.z), 6) == 0) then
+				targetPos = vector.new(turtlePos.x, turtlePos.y + 1, turtlePos.z)
+			else
+				targetPos = vector.new(turtlePos.x, turtlePos.y - 1, turtlePos.z)
+			end
+
+			TravelAndMine(targetPos)
+		end
+	end
+	
+	-- Handle depth
+	if(CheckIfAtEnd() == true) then
+		TravelAndMineZ(layMaxD)
 	end
 end
 
@@ -145,35 +191,19 @@ local function Quarry(LayerWidth, LayerLength, LayerDepth)
 		turtleUtil.moveForward()
 	end	
 
-	local goBack = false
-
-	for z=1, (math.abs(layD) + 1), 1 do
-
-		if(goBack == false) then
-			MineLayerFromStart(layW, layL)
-			goBack = true
-		else
-			MineLayerFromEnd(layW, layL)
-			goBack = false
+	local currentDirection, turtlePos = turtleUtil.getLocalData()
+	
+	local isDone = false
+	while(isDone == false) do
+		MineLayer(layW, layL, layD)
+		
+		if(turtlePos.z >= layD and CheckIfAtEnd() == true) then
+			isDone = true
 		end
+	end
 
-		-- Go up or go down?
-		if(layD > 0) then
-			-- We want to mine up.
-			if(layD ~= 0 and z ~= math.abs(layD) + 1) then			
-				--Go up 3 levels
-				turtleUtil.mineUp()
-				--turtleUtil.mineForward(2)
-			end
-		else
-			-- We want to mine down			
-			if(layD ~= 0 and z ~= math.abs(layD) + 1) then			
-				--Go up 3 levels
-				turtleUtil.mineDown()
-				-- turtleUtil.mineForward(2)
-			end
-		end		
-	end	
+	--Return home.
+	Return_DoneMining()
 end
 
 function MinePLusInit ()

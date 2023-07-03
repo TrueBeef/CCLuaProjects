@@ -1,22 +1,32 @@
-local function SaveLocalPositioning()
-	fs.makeDir("/Seanware/Savedata")
-	local file = fs.open("/Seanware/Savedata/TurtleUtilSavedata.lua","w")
-	
-		local handle = download.readAll() --Reads everything in download
-		download.close() --remember to close the download!
-		local file = fs.open(saveTo,"w") --opens the file defined in 'saveTo' with the permissions to write.
-		file.write(handle) --writes all the stuff in handle to the file defined in 'saveTo'
-		file.close() --remember to close the file!
-		term.setTextColor(colors.green)
-		print("Installed file: " .. repoFile)
-		else --if returned false
-		term.setTextColor(colors.red)
-		print("Unable to download the file ".. repoFile)
-		print("Make sure you have the HTTP API enabled or")
-		print("an internet connection!")
-	end --end the if
-end --close the function
+-- Uses Lightweight Json Library by rxi. Thanks dude.
+-- https://github.com/rxi/json.lua
+-- json.encode({ 1, 2, 3, { x = 10 } }) -- Returns '[1,2,3,{"x":10}]'
+-- json.decode('[1,2,3,{"x":10}]') -- Returns { 1, 2, 3, { x = 10 } }
 
-end
+json = require("json")
+
+local function SaveLocalPositioning()
+	local posX = 5
+	local posY = -7
+	local posZ = 13
+	local facingDir = "North"
+
+	local saveData = {}
+
+	fs.makeDir("/Seanware/Savedata")
+	local saveFile = fs.open("/Seanware/Savedata/TurtleUtilSavedata.json", "w")
+
+	encodedJson = json.encode({saveData = { 
+		posX,
+		posY,
+		posZ,
+		facingDir 
+	}})
+	saveFile.write(encodedJson) --writes all the stuff in handle to the file defined in 'saveTo'
+	saveFile.close() --remember to close the file!
+		
+	term.setTextColor(colors.green)
+	print("Saved File to /Seanware/Savedata")
+end --close the function
 
 SaveLocalPositioning()
