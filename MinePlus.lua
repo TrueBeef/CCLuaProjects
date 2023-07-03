@@ -177,7 +177,7 @@ local function MineLayer(layMaxW, layMaxL, layMaxD)
 			targetPos = vector.new(turtlePos.x - 1, turtlePos.y, turtlePos.z)
 			currentDirection, turtlPos = TravelAndMine(targetPos)
 		elseif(turtlePos.x > 1) then
-			local targetPos = vector.new(turtlePos.x + 1, turtlePos.y, turtlePos.z)
+			local targetPos = vector.new(turtlePos.x - 1, turtlePos.y, turtlePos.z)
 			currentDirection, turtlPos = TravelAndMine(targetPos)
 		end
 
