@@ -9,6 +9,7 @@ local function Return_DoneMining()
 	term.setCursorPos(1,2)
 	
 	turtleUtil.goToPos(vector.new(0, 0, 0))	
+	turtleUtil.faceDirection(turtleUtil.direction.North)
 end
 
 local function Return_FullInventory(leftOffPos)
@@ -106,6 +107,8 @@ local function TravelAndMine(travelPos)
 	turtle.digUp()
 	turtle.digDown()
 	CheckResources()
+
+	return turtleUtil.getLocalData()
 end
 
 
@@ -140,9 +143,14 @@ local function MineLayer(layMaxW, layMaxL, layMaxD)
 	-- Every other column we swap which direction we're going. Thus the modulo.
 	-- Y Starts at zero.
 	if(math.fmod(turtlePos.y, 2) == 0) then
-		local targetPos = vector.new(turtlePos.x + 1, turtlePos.y, turtlePos.z)
-		TravelAndMine(targetPos)
-		
+		if(turtlePos.x == 1) then
+			local targetPos = vector.new(turtlePos.x, turtlePos.y, turtlePos.z)
+			currentDirection, turtlPos = TravelAndMine(targetPos)
+		else
+			local targetPos = vector.new(turtlePos.x + 1, turtlePos.y, turtlePos.z)
+			currentDirection, turtlPos = TravelAndMine(targetPos)
+		end
+
 		-- We need to increase/decrase our Y coord
 		if(turtlePos.x == layMaxL) then		
 			-- Check if we're going up or down
@@ -154,11 +162,16 @@ local function MineLayer(layMaxW, layMaxL, layMaxD)
 				targetPos = vector.new(turtlePos.x, turtlePos.y - 1, turtlePos.z)
 			end
 
-			TravelAndMine(targetPos)
+			currentDirection, turtlPos = TravelAndMine(targetPos)
 		end
 	else
-		local targetPos = vector.new(turtlePos.x - 1, turtlePos.y, turtlePos.z)
-		TravelAndMine(targetPos)
+		if(turtlePos.x == layMaxL) then
+			local targetPos = vector.new(turtlePos.x, turtlePos.y, turtlePos.z)
+			currentDirection, turtlPos = TravelAndMine(targetPos)
+		else
+			local targetPos = vector.new(turtlePos.x - 1, turtlePos.y, turtlePos.z)
+			currentDirection, turtlPos = TravelAndMine(targetPos)
+		end
 
 		-- We need to increase/decrase our Y coord
 		-- X Starts at 1
@@ -171,7 +184,7 @@ local function MineLayer(layMaxW, layMaxL, layMaxD)
 				targetPos = vector.new(turtlePos.x, turtlePos.y - 1, turtlePos.z)
 			end
 
-			TravelAndMine(targetPos)
+			currentDirection, turtlPos = TravelAndMine(targetPos)
 		end
 	end
 	
@@ -191,19 +204,16 @@ local function Quarry(LayerWidth, LayerLength, LayerDepth)
 		turtleUtil.moveForward()
 	end	
 
-	local currentDirection, turtlePos = turtleUtil.getLocalData()
 	
 	local isDone = false
 	while(isDone == false) do
+		local currentDirection, turtlePos = turtleUtil.getLocalData()
 		MineLayer(layW, layL, layD)
 		
 		if(turtlePos.z >= layD and CheckIfAtEnd() == true) then
 			isDone = true
 		end
-	end
-
-	--Return home.
-	Return_DoneMining()
+	end	
 end
 
 function MinePLusInit ()
@@ -258,13 +268,12 @@ function MinePLusInit ()
 
 	turtleUtil.initGlobals()
 	turtleUtil.fuelUp()
+	CheckResources()
 
 	Quarry(mineLayerWidth, mineLayerLength, mineLayerDepth)
 
 	if(returnHome == "y" or returnHome == "Y" or returnHome == "yes") then
-		local targetPos = vector.new(0, 0, 0)	
-		turtleUtil.goToPos(targetPos)
-		turtleUtil.faceDirection(turtleUtil.direction.North)
+		Return_DoneMining()
 	end
 	
 end
