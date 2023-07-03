@@ -1,6 +1,6 @@
 turtleUtil = require("TurtleMovementUtil")
 
-versionNumber = " -== Mine Plus v1.1.12 ==- "
+versionNumber = " -== Mine Plus v1.1.13 ==- "
 
 local function Return_DoneMining()
 	term.clear()
