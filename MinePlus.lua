@@ -117,10 +117,10 @@ local function CheckIfAtEnd(layMaxW, layMaxL, layMaxD)
 	if(math.fmod(math.abs(turtlePos.z), 6) == 0) then
 		if(turtlePos.y == layMaxW) then
 			-- Are we supposed to be at the top or bottom?
-			if(math.fmod(layMaxW.y, 2) == 0 and turtlePos.x == layMaxL) then
+			if(math.fmod(layMaxW, 2) == 0 and turtlePos.x == layMaxL) then
 				--We are at the correct point. Dig down and start a new layer.
 				return true
-			elseif(math.fmod(layMaxW.y, 2) ~= 0 and turtlePos.x == 1) then
+			elseif(math.fmod(layMaxW, 2) ~= 0 and turtlePos.x == 1) then
 				--We are at the correct point. Dig down and start a new layer.	
 				return true
 			end
@@ -201,11 +201,11 @@ local function MineLayer(layMaxW, layMaxL, layMaxD)
 	end
 
 	
-	print("x: " .. turtlPos.x .. ", y: " .. turtlPos.y .. ", z: " turtlPos.z)
+	-- print("x: " .. turtlPos.x .. ", y: " .. turtlPos.y .. ", z: " turtlPos.z)
 	
 	-- Handle depth
 	if(CheckIfAtEnd() == true) then
-		print("We're at the end")			
+		-- print("We're at the end")			
 		TravelAndMineZ(layMaxD)
 	end
 end
