@@ -64,6 +64,9 @@ local function CheckResources()
 	end
 end
 
+local function FindBottom()
+	
+end
 
 local function MineLayerFromEnd(layW, layL)
 	-- Handles the x and Y coords.

@@ -27,8 +27,18 @@ local function SaveLocalPositioning()
 end
 
 local function LoadLocalPositioning()
-	
+	-- Check if we have save data
+	if(fs.exists("TurtleUtilSavedata.lua")) then
+		
+	end
 end
+
+local function ClearSavedata()
+	if(fs.exists("TurtleUtilSavedata.lua")) then
+		fs.delete("TurtleUtilSavedata.lua")
+	end
+end
+
 
 local function GetLocalPositionData()
 	return currentFacingDir, localPos
