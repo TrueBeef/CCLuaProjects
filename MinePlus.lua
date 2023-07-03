@@ -124,7 +124,7 @@ local function CheckIfAtEnd(layMaxW, layMaxL, layMaxD)
 		end	
 	else	
 		-- We know we started here going forward so the 'End point' is right where we started; y0 x1.
-		if(turtlePos.y == 0 and turtlePos.x = 1) then
+		if(turtlePos.y == 0 and turtlePos.x == 1) then
 			return true
 		end
 	end	
