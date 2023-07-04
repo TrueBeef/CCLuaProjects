@@ -1,6 +1,58 @@
+-- Uses Lightweight Json Library by rxi. Thanks dude.
+-- https://github.com/rxi/json.lua
+-- json.encode({ 1, 2, 3, { x = 10 } }) -- Returns '[1,2,3,{"x":10}]'
+-- json.decode('[1,2,3,{"x":10}]') -- Returns { 1, 2, 3, { x = 10 } }
+json = require("json")
+
 turtleUtil = require("TurtleMovementUtil")
 
-versionNumber = " -== Mine Plus v1.2.0 ==- "
+versionNumber = " -== Mine Plus v1.2.5 ==- "
+
+mineLayerLength, mineLayerWidth, mineLayerDepth, returnHome, lastPos
+
+local function SaveMinePlusData()
+	-- Also make the Movement Util save
+	turtleUtil.saveTurtleUtilData()
+
+	fs.makeDir("/Seanware/Savedata")
+	local saveFile = fs.open("/Seanware/Savedata/MinePlusSaveData.json", "w")
+
+	local saveData = {
+			mineLayerLength,
+			mineLayerWidth,
+			mineLayerDepth,
+			returnHome,
+			lastPos
+		}
+
+	encodedJson = json.encode({saveData})
+	saveFile.write(encodedJson) --writes all the stuff in handle to the file defined in 'saveTo'
+	saveFile.close()
+end
+
+local function LoadMinePlusData()
+	-- Also make the Movement Util load
+	turtleUtil.loadTurtleUtilData()
+
+	print("Loading saved data...")
+
+	local saveFile = fs.open("/Seanware/Savedata/MinePlusSaveData.json", "r")
+	local encodedDat = saveFile.readAll()
+	mineLayerLength, mineLayerWidth, mineLayerDepth, returnHome, lastPos = json.decode(encodedDat)
+
+	print("L: " .. mineLayerLength)
+	print("W: " .. mineLayerWidth)
+	print("D: " .. mineLayerDepth)
+	print("Home: " .. returnHome)
+	print("LastPos: " .. lastPos)
+end
+
+local function CheckForLoadData()
+	if(fs.exists("/Seanware/Savedata/MinePlusSaveData.json")) then
+		LoadMinePlusData()
+		BeginMineProcess()
+	end
+end
 
 local function Return_DoneMining()
 	term.clear()
@@ -12,7 +64,8 @@ local function Return_DoneMining()
 	turtleUtil.faceDirection(turtleUtil.direction.North)
 end
 
-local function Return_FullInventory(leftOffPos)
+local function Return_FullInventory()
+	SaveMinePlusData()
 	term.clear()
 	term.setCursorPos(1,1)
 	term.write("Our inventory is close to full!")
@@ -30,11 +83,12 @@ local function Return_FullInventory(leftOffPos)
 
 	-- We're good to go.
 	turtleUtil.moveBackward()
-	turtleUtil.goToPos(leftOffPos)
+	turtleUtil.goToPos(lastPos)
 end
 
 
-local function Return_OutOfFuel(leftOffPos, costToHome)	
+local function Return_OutOfFuel(costToHome)
+	SaveMinePlusData()
 	turtleUtil.goToPos(vector.new(0, 0, 0))	
 	print("Add fuel and press enter.")
 	
@@ -49,11 +103,11 @@ local function Return_OutOfFuel(leftOffPos, costToHome)
 	turtle.select(1)
 	
 	if(turtleUtil.checkFuel(costToHome)) then
-		Return_OutOfFuel()
+		Return_OutOfFuel(costToHome)
 	end
 
 	-- We're good to go.
-	turtleUtil.goToPos(leftOffPos)
+	turtleUtil.goToPos(lastPos)
 end
 
 
@@ -63,13 +117,15 @@ local function CheckResources()
 
 	-- Check for inventory fullness
 	if(slotsWithItems >= 15) then
-		Return_FullInventory(turtlePos)
+		lastPos = turtlePos
+		Return_FullInventory()
 	end	
 
 	-- Check fuel levels
 	-- Calculate cost to get to home pos
 	costToHome = (turtlePos.x + turtlePos.y + turtlePos.z + 1)
 	if(turtleUtil.checkFuel(costToHome) == true) then
+		lastPos = turtlePos
 		Return_OutOfFuel(turtlePos, costToHome)
 	end
 end
@@ -145,17 +201,17 @@ local function MineLayer(layMaxW, layMaxL, layMaxD)
 				turtle.digUp()
 				turtle.digDown()
 				targetPos = vector.new(turtlePos.x + 1, turtlePos.y, turtlePos.z)
-				currentDirection, turtlPos = TravelAndMine(targetPos)
+				currentDirection, turtlePos = TravelAndMine(targetPos)
 			elseif(turtlePos.x < layMaxL) then
 				local targetPos = vector.new(turtlePos.x + 1, turtlePos.y, turtlePos.z)
-				currentDirection, turtlPos = TravelAndMine(targetPos)
+				currentDirection, turtlePos = TravelAndMine(targetPos)
 			end		
 
 			--Layer one
 			if(turtlePos.x == layMaxL) then -- Are we as far forward as we can get?
 				if(turtlePos.y < layMaxW) then -- Are we still not at the max width?
 					targetPos = vector.new(turtlePos.x, turtlePos.y + 1, turtlePos.z) -- Go to next column
-					currentDirection, turtlPos = TravelAndMine(targetPos)
+					currentDirection, turtlePos = TravelAndMine(targetPos)
 				end
 			end
 		else
@@ -164,17 +220,17 @@ local function MineLayer(layMaxW, layMaxL, layMaxD)
 				turtle.digUp()
 				turtle.digDown()
 				targetPos = vector.new(turtlePos.x - 1, turtlePos.y, turtlePos.z)
-				currentDirection, turtlPos = TravelAndMine(targetPos)
+				currentDirection, turtlePos = TravelAndMine(targetPos)
 			elseif(turtlePos.x > 1) then
 				local targetPos = vector.new(turtlePos.x - 1, turtlePos.y, turtlePos.z)
-				currentDirection, turtlPos = TravelAndMine(targetPos)
+				currentDirection, turtlePos = TravelAndMine(targetPos)
 			end
 
 			--Layer two
 			if(turtlePos.x == 1) then
 				if(turtlePos.y > 0) then
 					targetPos = vector.new(turtlePos.x, turtlePos.y - 1, turtlePos.z)
-					currentDirection, turtlPos = TravelAndMine(targetPos)
+					currentDirection, turtlePos = TravelAndMine(targetPos)
 				end
 			end
 		end
@@ -186,17 +242,17 @@ local function MineLayer(layMaxW, layMaxL, layMaxD)
 				turtle.digUp()
 				turtle.digDown()
 				targetPos = vector.new(turtlePos.x - 1, turtlePos.y, turtlePos.z)
-				currentDirection, turtlPos = TravelAndMine(targetPos)
+				currentDirection, turtlePos = TravelAndMine(targetPos)
 			elseif(turtlePos.x > 1) then
 				local targetPos = vector.new(turtlePos.x - 1, turtlePos.y, turtlePos.z)
-				currentDirection, turtlPos = TravelAndMine(targetPos)
+				currentDirection, turtlePos = TravelAndMine(targetPos)
 			end
 		
 			--Layer one
 			if(turtlePos.x == 1) then -- Are we as far forward as we can get?
 				if(turtlePos.y < layMaxW) then -- Are we still not at the max width?
 					targetPos = vector.new(turtlePos.x, turtlePos.y + 1, turtlePos.z) -- Go to next column
-					currentDirection, turtlPos = TravelAndMine(targetPos)
+					currentDirection, turtlePos = TravelAndMine(targetPos)
 				end
 			end			
 
@@ -206,17 +262,17 @@ local function MineLayer(layMaxW, layMaxL, layMaxD)
 				turtle.digUp()
 				turtle.digDown()
 				targetPos = vector.new(turtlePos.x + 1, turtlePos.y, turtlePos.z)
-				currentDirection, turtlPos = TravelAndMine(targetPos)
+				currentDirection, turtlePos = TravelAndMine(targetPos)
 			elseif(turtlePos.x < layMaxL) then
 				local targetPos = vector.new(turtlePos.x + 1, turtlePos.y, turtlePos.z)
-				currentDirection, turtlPos = TravelAndMine(targetPos)
+				currentDirection, turtlePos = TravelAndMine(targetPos)
 			end	
 
 			--Layer two
 			if(turtlePos.x == layMaxL) then
 				if(turtlePos.y > 0) then
 					targetPos = vector.new(turtlePos.x, turtlePos.y - 1, turtlePos.z)
-					currentDirection, turtlPos = TravelAndMine(targetPos)
+					currentDirection, turtlePos = TravelAndMine(targetPos)
 				end
 			end
 		end
@@ -254,7 +310,21 @@ local function Quarry(LayerWidth, LayerLength, LayerDepth)
 	end	
 end
 
-function MinePlusInit ()
+local function BeginMineProcess()
+
+	turtleUtil.initGlobals()
+	turtleUtil.fuelUp()
+	CheckResources()
+
+	Quarry(mineLayerWidth - 1, mineLayerLength, mineLayerDepth)
+
+	if(returnHome == "y" or returnHome == "Y" or returnHome == "yes") then
+		Return_DoneMining()
+	end
+end
+
+
+local function MinePlusInit ()
 	term.clear()
 	term.setCursorPos(1,1)
 	term.write(versionNumber)
@@ -294,6 +364,20 @@ function MinePlusInit ()
 	term.write("Should we return home after? (y/n)")
 	term.setCursorPos(1,5)	
 	returnHome = read()
+
+	term.clear()		
+	term.setCursorPos(1,1)
+	term.write("Distance: " .. mineLayerLength)
+	term.setCursorPos(1,2)
+	term.write("Width: " .. mineLayerWidth)
+	term.setCursorPos(1,3)
+	term.write("Depth: " .. mineLayerDepth)
+	term.setCursorPos(1,4)
+	term.write("Homing: " .. returnHome)
+	term.setCursorPos(1,5)	
+	term.write("Use save/load system? (y/n)")
+	term.setCursorPos(1,6)	
+	useSaveLoad = read()
 		
 	term.clear()
 	term.setCursorPos(1,1)
@@ -302,18 +386,13 @@ function MinePlusInit ()
 	print("Selected Width: " .. mineLayerWidth)	
 	print("Selected Depth: " .. mineLayerDepth)
 	print("Returning Home: " .. returnHome)	
-	print("Mining!")		
+	print("Mining!")
 
-	turtleUtil.initGlobals()
-	turtleUtil.fuelUp()
-	CheckResources()
-
-	Quarry(mineLayerWidth - 1, mineLayerLength, mineLayerDepth)
-
-	if(returnHome == "y" or returnHome == "Y" or returnHome == "yes") then
-		Return_DoneMining()
+	if(useSaveLoad == "y") then
+		SaveMinePlusData()
 	end
-	
+
+	BeginMineProcess()
 end
 
 MinePlusInit()

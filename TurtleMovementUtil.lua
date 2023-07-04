@@ -28,20 +28,43 @@ local function InitializeGlobals()
 end
 --Saving and loading the last known position of this turtle.
 --Helps us not get lost.
-local function SaveLocalPositioning()
-	
+local function SaveMinePlusData()
+	-- Also make the Movement Util save
+
+	fs.makeDir("/Seanware/Savedata")
+	local saveFile = fs.open("/Seanware/Savedata/TurtleUtilSavedata.json", "w")
+
+	local saveData = {
+			localPosX = localPos.x,
+			localPosY = localPos.y,
+			localPosZ = localPos.z,
+			currentDir = currentFacingDir
+		}
+
+	encodedJson = json.encode({saveData})
+	saveFile.write(encodedJson) --writes all the stuff in handle to the file defined in 'saveTo'
+	saveFile.close()
 end
 
-local function LoadLocalPositioning()
-	-- Check if we have save data
-	if(fs.exists("TurtleUtilSavedata.lua")) then
-		
-	end
+local function LoadMinePlusData()
+	-- Also make the Movement Util load
+
+	local saveFile = fs.open("/Seanware/Savedata/TurtleUtilSavedata.json", "r")
+	local encodedDat = saveFile.readAll()
+	saveData = json.decode(encodedDat)
+
+	localPos = vector.new(saveData.localPosX, saveData.localPosY, saveData.localPosZ)
+	currentFacingDir = saveData.currentDir
+
+	print("X: " .. localPos.x)
+	print("Y: " .. localPos.y)
+	print("Z: " .. localPos.z)
+	print("Facing Dir: " .. currentFacingDir)
 end
 
 local function ClearSavedata()
-	if(fs.exists("TurtleUtilSavedata.lua")) then
-		fs.delete("TurtleUtilSavedata.lua")
+	if(fs.exists("TurtleUtilSavedata.json")) then
+		fs.delete("TurtleUtilSavedata.json")
 	end
 end
 
@@ -89,6 +112,8 @@ end
 
 local function MoveBackwardUtil()
 	if(turtle.back()) then
+		SaveMinePlusData()
+
 		if(currentFacingDir == facingDirection.North) then
 			-- Sub to X Coord
 			localPos = localPos - vector.new(1, 0, 0)
@@ -111,6 +136,8 @@ end
 -- Moves the turtle while also tallying what directions we've moved
 local function MoveForwardUtil()
 	if(turtle.forward()) then
+		SaveMinePlusData()
+
 		if(currentFacingDir == facingDirection.North) then
 			-- Add to X Coord
 			localPos = localPos + vector.new(1, 0, 0)
@@ -132,6 +159,8 @@ end
 
 local function MoveUpUtil()
 	if(turtle.up()) then
+		SaveMinePlusData()
+
 		-- Add Z coord
 		localPos = localPos + vector.new(0, 0, 1)
 		return true
@@ -142,6 +171,8 @@ end
 
 local function MoveDownUtil()
 	if(turtle.down()) then
+		SaveMinePlusData()
+
 		-- Subtract Z coord
 		localPos = localPos - vector.new(0, 0, 1)
 	else
@@ -289,7 +320,9 @@ end
 
 --When this file is 'required' it returns the functions below
 return { 
-	initGlobals = InitializeGlobals,	
+	initGlobals = InitializeGlobals,
+	saveTurtleUtilData = SaveMinePlusData,
+	loadTurtleUtilData = LoadMinePlusData,
 	fuelUp = FuelUp,
 	checkFuel = CheckFuel,
 	moveForward = MoveForwardUtil,
