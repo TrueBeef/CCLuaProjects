@@ -91,12 +91,11 @@ local function Return_FullInventory()
 
 	-- Sleeps for 5 seconds and checks inventory again.
 	-- All items must be gone.
-	sleep(15)
-
 	local totalItems, slotsWithItems = turtleUtil.checkInventory()
-	if(totalItems ~= 0) then
-		Return_FullInventory()
-	end
+	while(totalItems ~= 0) do
+		sleep(5)
+		totalItems, slotsWithItems = turtleUtil.checkInventory()
+	end	
 
 	-- We're good to go.
 	turtleUtil.moveBackward()
@@ -107,21 +106,18 @@ end
 local function Return_OutOfFuel(costToHome)
 	SaveMinePlusData()
 	turtleUtil.goToPos(vector.new(0, 0, 0))	
-	print("Add fuel and press enter.")
-	
-	read()
+	print("Add fuel so we may continue.")
 
-	-- Attempt to refuel with anything in the inventory
-	for i=1,16 do
-		turtle.select(i)
-		turtle.refuel()
-	end
+	while(turtleUtil.checkFuel(costToHome)) do
+		sleep(10)
+		-- Attempt to refuel with anything in the inventory
+		for i=1,16 do
+			turtle.select(i)
+			turtle.refuel()
+		end
 
-	turtle.select(1)
-	
-	if(turtleUtil.checkFuel(costToHome)) then
-		Return_OutOfFuel(costToHome)
-	end
+		turtle.select(1)
+	end	
 
 	-- We're good to go.
 	turtleUtil.goToPos(lastPos)
