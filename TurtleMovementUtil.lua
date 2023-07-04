@@ -62,12 +62,11 @@ local function LoadMinePlusData()
 	print("Facing Dir: " .. currentFacingDir)
 end
 
-local function ClearSavedata()
-	if(fs.exists("TurtleUtilSavedata.json")) then
-		fs.delete("TurtleUtilSavedata.json")
+local function ClearSaveData()
+	if(fs.exists("/Seanware/Savedata/TurtleUtilSavedata.json")) then
+		fs.delete("/Seanware/Savedata/TurtleUtilSavedata.json")
 	end
 end
-
 
 local function GetLocalPositionData()
 	return currentFacingDir, localPos

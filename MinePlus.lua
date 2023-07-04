@@ -15,6 +15,12 @@ returnHome = ""
 plummet = ""
 lastPos = vector.new(0, 0, 0)
 
+local function ClearSaveData()
+	if(fs.exists("/Seanware/Savedata/MinePlusSaveData.json")) then
+		fs.delete("/Seanware/Savedata/MinePlusSaveData.json")
+	end
+end
+
 local function SaveMinePlusData()
 	-- Also make the Movement Util save
 	turtleUtil.saveTurtleUtilData()

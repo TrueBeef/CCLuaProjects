@@ -7,7 +7,12 @@ local function ListTurtles( )
 	return { peripheral.find("turtle") }
 end
 
-local function TurtleToBulk(turtle)
+local function TurtleToBuffer( ... )
+	-- body
+end
+
+
+local function BufferToBulk(turtle)
 	print(peripheral.getName(turtle))
 	chestTable = ListChests()
 	
@@ -36,9 +41,7 @@ end
 local function WaitForTurtle( )
 	while(true)	do
 		-- Look for turtles
-		turtleTable = ListTurtles()
-		print("What chest ID is our buffer? (Num only)")
-		bufferID = read()
+		turtleTable = ListTurtles()		
 
 		print("Looking for turtle...")
 		for _, turtle in pairs(turtleTable) do
@@ -50,7 +53,7 @@ local function WaitForTurtle( )
 			--	print(method)
 			--end
 
-			TurtleToBulk(turtle)			
+			TurtleToBuffer(turtle)			
 		end
 
 		sleep(10)
