@@ -6,7 +6,7 @@ json = require("json")
 
 turtleUtil = require("TurtleMovementUtil")
 
-versionNumber = " -== Mine Plus v1.2.5 ==- "
+versionNumber = " -== Mine Plus v1.2.6 ==- "
 
 mineLayerLength = 0
 mineLayerWidth = 0
@@ -27,8 +27,8 @@ local function SaveMinePlusData()
 			mineLayerWidth = mineLayerWidth,
 			mineLayerDepth = mineLayerDepth,
 			returnHome = returnHome,
-			lastPosX = lastPos.x
-			lastPosY = lastPos.y
+			lastPosX = lastPos.x,
+			lastPosY = lastPos.y,
 			lastPosZ = lastPos.z
 		}
 
@@ -153,6 +153,9 @@ local function FindBottom()
 	while (moveDown) do
 		moveDown = turtleUtil.moveDown()
 	end
+
+	-- Go up one just to align with any previously mined portions.
+	turtleUtil.moveUp()
 
 	return true		
 end
