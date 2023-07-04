@@ -323,6 +323,7 @@ return {
 	initGlobals = InitializeGlobals,
 	saveTurtleUtilData = SaveMinePlusData,
 	loadTurtleUtilData = LoadMinePlusData,
+	clearSaveData = ClearSavedata,
 	fuelUp = FuelUp,
 	checkFuel = CheckFuel,
 	moveForward = MoveForwardUtil,

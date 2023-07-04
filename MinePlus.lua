@@ -74,6 +74,8 @@ local function Return_DoneMining()
 	
 	turtleUtil.goToPos(vector.new(0, 0, 0))	
 	turtleUtil.faceDirection(turtleUtil.direction.North)
+
+	turtleUtil.clearSaveData()
 end
 
 local function Return_FullInventory()
@@ -86,7 +88,9 @@ local function Return_FullInventory()
 	term.setCursorPos(1,3)
 	turtleUtil.goToPos(vector.new(0, 0, 0))
 
-	read()
+	-- Sleeps for 5 seconds and checks inventory again.
+	-- All items must be gone.
+	sleep(5)
 
 	local totalItems, slotsWithItems = turtleUtil.checkInventory()
 	if(totalItems ~= 0) then
