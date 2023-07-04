@@ -306,7 +306,7 @@ local function GoToPosition(targetPos)
 		end
 	end	
 
-	SaveMinePlusData
+	SaveTurtleUtilData()
 end
 
 local function LoadTurtleUtilData()
