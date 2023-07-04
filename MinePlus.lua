@@ -12,6 +12,7 @@ mineLayerLength = 0
 mineLayerWidth = 0
 mineLayerDepth = 0
 returnHome = ""
+plummet = ""
 lastPos = vector.new(0, 0, 0)
 
 local function SaveMinePlusData()
@@ -313,6 +314,11 @@ local function Quarry(LayerWidth, LayerLength, LayerDepth)
 	if(turtleUtil.moveForward() == false) then
 		turtle.dig()
 		turtleUtil.moveForward()
+		
+		if(plummet == "y") then	
+			FindBottom()
+		end
+
 	end	
 	
 	local isDone = false
@@ -390,6 +396,20 @@ local function MinePlusInit ()
 	term.write("Depth: " .. mineLayerDepth)
 	term.setCursorPos(1,4)
 	term.write("Homing: " .. returnHome)
+	term.setCursorPos(1,5)
+	term.write("Plummet to bottom initially? (y/n)")
+	term.setCursorPos(1,6)	
+	plummet = read()	
+
+	term.clear()		
+	term.setCursorPos(1,1)
+	term.write("Distance: " .. mineLayerLength)
+	term.setCursorPos(1,2)
+	term.write("Width: " .. mineLayerWidth)
+	term.setCursorPos(1,3)
+	term.write("Depth: " .. mineLayerDepth)
+	term.setCursorPos(1,4)
+	term.write("Homing: " .. returnHome)
 	term.setCursorPos(1,5)	
 	term.write("Use save/load system? (y/n)")
 	term.setCursorPos(1,6)	
@@ -407,6 +427,7 @@ local function MinePlusInit ()
 	if(useSaveLoad == "y") then
 		SaveMinePlusData()
 	end
+
 
 	BeginMineProcess()
 end
