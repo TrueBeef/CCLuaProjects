@@ -159,10 +159,10 @@ end
 
 local function MoveUpUtil()
 	if(turtle.up()) then
-		SaveMinePlusData()
 
 		-- Add Z coord
 		localPos = localPos + vector.new(0, 0, 1)
+		SaveMinePlusData()
 		return true
 	else
 		return false
@@ -171,10 +171,10 @@ end
 
 local function MoveDownUtil()
 	if(turtle.down()) then
-		SaveMinePlusData()
-
 		-- Subtract Z coord
 		localPos = localPos - vector.new(0, 0, 1)
+		SaveMinePlusData()
+		return true
 	else
 		return false
 	end	
