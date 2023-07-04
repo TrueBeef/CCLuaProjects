@@ -41,7 +41,7 @@ local function SaveMinePlusData()
 			currentDir = currentFacingDir
 		}
 
-	encodedJson = json.encode({saveData})
+	encodedJson = json.encode(saveData)
 	saveFile.write(encodedJson) --writes all the stuff in handle to the file defined in 'saveTo'
 	saveFile.close()
 end
@@ -53,8 +53,8 @@ local function LoadMinePlusData()
 	local encodedDat = saveFile.readAll()
 	saveData = json.decode(encodedDat)
 
-	localPos = vector.new(saveData.localPosX, saveData.localPosY, saveData.localPosZ)
-	currentFacingDir = saveData.currentDir
+	localPos = vector.new(saveData["localPosX"], saveData["localPosY"], saveData["localPosZ"])
+	currentFacingDir = saveData["currentDir"]
 
 	print("X: " .. localPos.x)
 	print("Y: " .. localPos.y)

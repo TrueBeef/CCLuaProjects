@@ -22,14 +22,16 @@ local function SaveMinePlusData()
 	local saveFile = fs.open("/Seanware/Savedata/MinePlusSaveData.json", "w")
 
 	local saveData = {
-			mineLayerLength,
-			mineLayerWidth,
-			mineLayerDepth,
-			returnHome,
-			lastPos
+			mineLayerLength = mineLayerLength,
+			mineLayerWidth = mineLayerWidth,
+			mineLayerDepth = mineLayerDepth,
+			returnHome = returnHome,
+			lastPosX = lastPos.x
+			lastPosY = lastPos.y
+			lastPosZ = lastPos.z
 		}
 
-	encodedJson = json.encode({saveData})
+	encodedJson = json.encode(saveData)
 	saveFile.write(encodedJson) --writes all the stuff in handle to the file defined in 'saveTo'
 	saveFile.close()
 end
@@ -42,7 +44,13 @@ local function LoadMinePlusData()
 
 	local saveFile = fs.open("/Seanware/Savedata/MinePlusSaveData.json", "r")
 	local encodedDat = saveFile.readAll()
-	mineLayerLength, mineLayerWidth, mineLayerDepth, returnHome, lastPos = json.decode(encodedDat)
+	saveData = json.decode(encodedDat)
+
+	mineLayerLength = saveData["mineLayerLength"]
+	mineLayerWidth = saveData["mineLayerWidth"]
+	mineLayerDepth = saveData["mineLayerDepth"]
+	returnHome = saveData["returnHome"]
+	lastPos = vector.new(saveData["lastPosX"], saveData["lastPosY"], saveData["lastPosZ"])
 
 	print("L: " .. mineLayerLength)
 	print("W: " .. mineLayerWidth)
