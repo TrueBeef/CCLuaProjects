@@ -8,7 +8,11 @@ turtleUtil = require("TurtleMovementUtil")
 
 versionNumber = " -== Mine Plus v1.2.5 ==- "
 
-mineLayerLength, mineLayerWidth, mineLayerDepth, returnHome, lastPos
+mineLayerLength = 0
+mineLayerWidth = 0
+mineLayerDepth = 0
+returnHome = ""
+lastPos = vector.new(0, 0, 0)
 
 local function SaveMinePlusData()
 	-- Also make the Movement Util save
