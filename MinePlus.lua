@@ -201,7 +201,7 @@ local function MineLayer(layMaxW, layMaxL, layMaxD)
 	end
 
 	
-	print("x: " .. turtlePos.x .. ", y: " .. turtlePos.y .. ", z: " turtlePos.z)
+	print("x: " .. turtlePos.x .. ", y: " .. turtlePos.y .. ", z: " .. turtlePos.z)
 	
 	-- Handle depth
 	if(CheckIfAtEnd() == true) then
