@@ -11,6 +11,8 @@ versionNumber = " -== Mine Plus v1.2.8 ==- "
 mineLayerLength = 0
 mineLayerWidth = 0
 mineLayerDepth = 0
+currentlyLowFuel = false
+currentlyFullInventory = false
 returnHome = ""
 plummet = ""
 lastPos = vector.new(0, 0, 0)
@@ -33,6 +35,8 @@ local function SaveMinePlusData()
 			mineLayerWidth = mineLayerWidth,
 			mineLayerDepth = mineLayerDepth,
 			returnHome = returnHome,
+			currentlyFullInventory = currentlyFullInventory,
+			currentlyLowFuel = currentlyLowFuel,
 			lastPosX = lastPos.x,
 			lastPosY = lastPos.y,
 			lastPosZ = lastPos.z
@@ -56,8 +60,10 @@ local function LoadMinePlusData()
 	mineLayerLength = saveData["mineLayerLength"]
 	mineLayerWidth = saveData["mineLayerWidth"]
 	mineLayerDepth = saveData["mineLayerDepth"]
-	returnHome = saveData["returnHome"]
+	currentlyFullInventory = saveData["currentlyFullInventory"]
+	currentlyLowFuel = saveData["currentlyLowFuel"]
 	lastPos = vector.new(saveData["lastPosX"], saveData["lastPosY"], saveData["lastPosZ"])
+	returnHome = saveData["returnHome"]
 
 	print("L: " .. mineLayerLength)
 	print("W: " .. mineLayerWidth)
@@ -66,6 +72,14 @@ local function LoadMinePlusData()
 	print("LastPos X: " .. lastPos.x)
 	print("LastPos Y: " .. lastPos.y)
 	print("LastPos Z: " .. lastPos.z)
+	print("currentlyLowFuel: " .. currentlyLowFuel)
+	print("currentlyFullInventory" .. currentlyFullInventory)
+
+	if(currentlyLowFuel) then
+		Return_OutOfFuel()
+	elseif(currentlyFullInventory) then
+		Return_FullInventory()
+	end
 end
 
 local function Return_DoneMining()
@@ -81,7 +95,9 @@ local function Return_DoneMining()
 end
 
 local function Return_FullInventory()
+	currentlyFullInventory = true
 	SaveMinePlusData()
+
 	term.clear()
 	term.setCursorPos(1,1)
 	term.write("My inventory is close to full!")
@@ -103,12 +119,19 @@ local function Return_FullInventory()
 
 	-- We're good to go.
 	turtleUtil.moveBackward()
+	currentlyFullInventory = false
+	SaveMinePlusData()
 	turtleUtil.goToPos(lastPos)
 end
 
 
-local function Return_OutOfFuel(costToHome)
+local function Return_OutOfFuel()
+	currentlyLowFuel = true
 	SaveMinePlusData()
+
+	local currentDirection, turtlePos = turtleUtil.getLocalData()
+	local costToHome = (math.abs(turtlePos.x) + math.abs(turtlePos.y) + math.abs(turtlePos.z)) + 1
+
 	turtleUtil.goToPos(vector.new(0, 0, 0))	
 	print("Add fuel so we may continue.")
 
@@ -125,6 +148,8 @@ local function Return_OutOfFuel(costToHome)
 
 	-- We're good to go.
 	turtleUtil.goToPos(lastPos)
+	currentlyLowFuel = false
+	SaveMinePlusData()
 end
 
 
@@ -140,10 +165,10 @@ local function CheckResources()
 
 	-- Check fuel levels
 	-- Calculate cost to get to home pos
-	costToHome = (turtlePos.x + turtlePos.y + turtlePos.z + 1)
+	costToHome = (math.abs(turtlePos.x) + math.abs(turtlePos.y) + math.abs(turtlePos.z)) + 1
 	if(turtleUtil.checkFuel(costToHome) == true) then
 		lastPos = turtlePos
-		Return_OutOfFuel(turtlePos, costToHome)
+		Return_OutOfFuel()
 	end
 end
 
