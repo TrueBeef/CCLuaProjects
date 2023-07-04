@@ -57,7 +57,9 @@ local function LoadMinePlusData()
 	print("W: " .. mineLayerWidth)
 	print("D: " .. mineLayerDepth)
 	print("Home: " .. returnHome)
-	print("LastPos: " .. lastPos)
+	print("LastPos X: " .. lastPos.x)
+	print("LastPos Y: " .. lastPos.y)
+	print("LastPos Z: " .. lastPos.z)
 end
 
 local function Return_DoneMining()

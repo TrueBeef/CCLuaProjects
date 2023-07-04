@@ -1,64 +1,61 @@
 
-
-function FindEmptySlot()
-	
-end
-
-function PushToInventory( ... )
-	-- body
-end
-
-function ListChests()
+local function ListChests()
 	return { peripheral.find("minecraft:chest") }
 end
 
-function ListTurtles( )
+local function ListTurtles( )
 	return { peripheral.find("turtle") }
 end
 
-function TurtleToBulk(turtle)
+local function TurtleToBulk(turtle)
+	print(peripheral.getName(turtle))
 	chestTable = ListChests()
 	
-	for i=1,16 do
-		turtleItem = turtle.getItemDetail(i)
+		-- turtleItem = turtle.getItemDetail(i)
+		-- if not turtleItem then break end	
 
-		selectedChestSlot = nil
-
+	for _, chest in pairs(chestTable) do
 		--Loop through turtle inventory
-		for _, chest in pairs(chestTable) do
-			-- find a chest with an empty slot.
-			for j=1,chest.size() do
+		for i=1,16, 1 do
+
+			-- make sure this chest has atleast one empty slot.
+			for j=1,chest.size(), 1 do
+
 				local item = chest.getItemDetail(j)
 
-				if(item ~= nil) then
-					-- Check if item name is the same as our turtleItem name
-					if(item.name == turtleItem.name) then
-						local remainingSpace = (item.maxCount - item.count)
-
-					end
+				if(item == nil) then
+					-- Pull from name, from slot, limit, to slot
+					chest.pullItems(peripheral.getName(turtle), i, 64)
+					break
 				end
 			end
-
-			if(selectedChestSlot ~= nil) then
-				break
-			end
-		end
+		end			
 	end
 end
 
-function WaitForTurtle( )
+local function WaitForTurtle( )
 	while(true)	do
 		-- Look for turtles
 		turtleTable = ListTurtles()
+		print("Looking for turtle...")
 
 		for _, turtle in pairs(turtleTable) do
 			-- We have turtles?
-			TurtleToBulk(turtle)
+			
+			--Find methods of peripheral. Keep for later tbh.
+			-- turtleMeths = peripheral.getMethods(peripheral.getName(turtle))
+			-- for _, method in pairs(turtleMeths) do
+			--	print(method)
+			--end
+
+			TurtleToBulk(turtle)			
 		end
 
 		sleep(10)
 	end
 end
+
+WaitForTurtle()
 
 
 
