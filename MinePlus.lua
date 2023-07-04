@@ -47,41 +47,6 @@ local function SaveMinePlusData()
 	saveFile.close()
 end
 
-local function LoadMinePlusData()
-	-- Also make the Movement Util load
-	turtleUtil.loadTurtleUtilData()
-
-	print("Loading saved data...")
-
-	local saveFile = fs.open("/Seanware/Savedata/MinePlusSaveData.json", "r")
-	local encodedDat = saveFile.readAll()
-	saveData = json.decode(encodedDat)
-
-	mineLayerLength = saveData["mineLayerLength"]
-	mineLayerWidth = saveData["mineLayerWidth"]
-	mineLayerDepth = saveData["mineLayerDepth"]
-	currentlyFullInventory = saveData["currentlyFullInventory"]
-	currentlyLowFuel = saveData["currentlyLowFuel"]
-	lastPos = vector.new(saveData["lastPosX"], saveData["lastPosY"], saveData["lastPosZ"])
-	returnHome = saveData["returnHome"]
-
-	print("L: " .. mineLayerLength)
-	print("W: " .. mineLayerWidth)
-	print("D: " .. mineLayerDepth)
-	print("Home: " .. returnHome)
-	print("LastPos X: " .. lastPos.x)
-	print("LastPos Y: " .. lastPos.y)
-	print("LastPos Z: " .. lastPos.z)
-	print("currentlyLowFuel: " .. currentlyLowFuel)
-	print("currentlyFullInventory" .. currentlyFullInventory)
-
-	if(currentlyLowFuel) then
-		Return_OutOfFuel()
-	elseif(currentlyFullInventory) then
-		Return_FullInventory()
-	end
-end
-
 local function Return_DoneMining()
 	term.clear()
 	term.setCursorPos(1,1)
@@ -152,6 +117,40 @@ local function Return_OutOfFuel()
 	SaveMinePlusData()
 end
 
+local function LoadMinePlusData()
+	-- Also make the Movement Util load
+	turtleUtil.loadTurtleUtilData()
+
+	print("Loading saved data...")
+
+	local saveFile = fs.open("/Seanware/Savedata/MinePlusSaveData.json", "r")
+	local encodedDat = saveFile.readAll()
+	saveData = json.decode(encodedDat)
+
+	mineLayerLength = saveData["mineLayerLength"]
+	mineLayerWidth = saveData["mineLayerWidth"]
+	mineLayerDepth = saveData["mineLayerDepth"]
+	currentlyFullInventory = saveData["currentlyFullInventory"]
+	currentlyLowFuel = saveData["currentlyLowFuel"]
+	lastPos = vector.new(saveData["lastPosX"], saveData["lastPosY"], saveData["lastPosZ"])
+	returnHome = saveData["returnHome"]
+
+	print("L: " .. mineLayerLength)
+	print("W: " .. mineLayerWidth)
+	print("D: " .. mineLayerDepth)
+	print("Home: " .. returnHome)
+	print("LastPos X: " .. lastPos.x)
+	print("LastPos Y: " .. lastPos.y)
+	print("LastPos Z: " .. lastPos.z)
+	print("currentlyLowFuel: " .. tostring(currentlyLowFuel))
+	print("currentlyFullInventory" .. tostring(currentlyFullInventory))
+
+	if(currentlyLowFuel) then
+		Return_OutOfFuel()
+	elseif(currentlyFullInventory) then
+		Return_FullInventory()
+	end
+end
 
 local function CheckResources()
 	local totalItems, slotsWithItems = turtleUtil.checkInventory()
