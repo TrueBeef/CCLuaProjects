@@ -63,13 +63,12 @@ end
 --Put all our things here we for sure want installed.
 -- Just the filenames.
 --Check for updates to the installer.
-InstallFromGit("SeanwareInstaller", "startup")
+InstallFromGit("SeanwareInstaller", "SeanwareInstaller")
 
 term.setTextColor(colors.orange)
 print("Installing Dependencies ... ")
 InstallFromGit("json", "json")
 InstallFromGit("TurtleMovementUtil", "TurtleMovementUtil")
-InstallFromGit("MinePlus", "MinePlus")
 
 -- Any additional stuff
 InstallAdditionalModules()
