@@ -19,6 +19,9 @@ localPos = vector.new(0, 0, 0)
 lastTurnDir = turnDirection.None
 currentFacingDir = facingDirection.North
 
+currentlyGoingTo = false
+goingToPos = vector.new(0, 0, 0)
+
 local function InitializeGlobals()
 	-- Prolly dont need to do these but eh
 	localPos = vector.new(0, 0, 0)
@@ -28,9 +31,8 @@ local function InitializeGlobals()
 end
 --Saving and loading the last known position of this turtle.
 --Helps us not get lost.
-local function SaveMinePlusData()
+local function SaveTurtleUtilData()
 	-- Also make the Movement Util save
-
 	fs.makeDir("/Seanware/Savedata")
 	local saveFile = fs.open("/Seanware/Savedata/TurtleUtilSavedata.json", "w")
 
@@ -38,28 +40,16 @@ local function SaveMinePlusData()
 			localPosX = localPos.x,
 			localPosY = localPos.y,
 			localPosZ = localPos.z,
-			currentDir = currentFacingDir
+			currentDir = currentFacingDir,
+			currentlyGoingTo = currentlyGoingTo
+			goingToPosX = goingToPos.x,
+			goingToPosY = goingToPos.y,
+			goingToPosZ = goingToPos.z,
 		}
 
 	encodedJson = json.encode(saveData)
 	saveFile.write(encodedJson) --writes all the stuff in handle to the file defined in 'saveTo'
 	saveFile.close()
-end
-
-local function LoadMinePlusData()
-	-- Also make the Movement Util load
-
-	local saveFile = fs.open("/Seanware/Savedata/TurtleUtilSavedata.json", "r")
-	local encodedDat = saveFile.readAll()
-	saveData = json.decode(encodedDat)
-
-	localPos = vector.new(saveData["localPosX"], saveData["localPosY"], saveData["localPosZ"])
-	currentFacingDir = saveData["currentDir"]
-
-	print("X: " .. localPos.x)
-	print("Y: " .. localPos.y)
-	print("Z: " .. localPos.z)
-	print("Facing Dir: " .. currentFacingDir)
 end
 
 local function ClearSaveData()
@@ -111,7 +101,7 @@ end
 
 local function MoveBackwardUtil()
 	if(turtle.back()) then
-		SaveMinePlusData()
+		SaveTurtleUtilData()
 
 		if(currentFacingDir == facingDirection.North) then
 			-- Sub to X Coord
@@ -135,7 +125,7 @@ end
 -- Moves the turtle while also tallying what directions we've moved
 local function MoveForwardUtil()
 	if(turtle.forward()) then
-		SaveMinePlusData()
+		SaveTurtleUtilData()
 
 		if(currentFacingDir == facingDirection.North) then
 			-- Add to X Coord
@@ -161,7 +151,7 @@ local function MoveUpUtil()
 
 		-- Add Z coord
 		localPos = localPos + vector.new(0, 0, 1)
-		SaveMinePlusData()
+		SaveTurtleUtilData()
 		return true
 	else
 		return false
@@ -172,7 +162,7 @@ local function MoveDownUtil()
 	if(turtle.down()) then
 		-- Subtract Z coord
 		localPos = localPos - vector.new(0, 0, 1)
-		SaveMinePlusData()
+		SaveTurtleUtilData()
 		return true
 	else
 		return false
@@ -315,13 +305,37 @@ local function GoToPosition(targetPos)
 			turtle.dig()
 		end
 	end	
+
+	SaveMinePlusData
+end
+
+local function LoadTurtleUtilData()
+	-- Also make the Movement Util load
+
+	local saveFile = fs.open("/Seanware/Savedata/TurtleUtilSavedata.json", "r")
+	local encodedDat = saveFile.readAll()
+	saveData = json.decode(encodedDat)
+
+	localPos = vector.new(saveData["localPosX"], saveData["localPosY"], saveData["localPosZ"])
+	currentFacingDir = saveData["currentDir"]
+	currentlyGoingTo = saveData["currentlyGoingTo"]
+	goingToPos = vector.new(saveData["goingToPosX"], saveData["goingToPosY"], saveData["goingToPosZ"])
+
+	print("X: " .. localPos.x)
+	print("Y: " .. localPos.y)
+	print("Z: " .. localPos.z)
+	print("Facing Dir: " .. currentFacingDir)
+
+	if(currentlyGoingTo == true) then
+		GoToPosition(goingToPos)
+	end
 end
 
 --When this file is 'required' it returns the functions below
 return { 
 	initGlobals = InitializeGlobals,
-	saveTurtleUtilData = SaveMinePlusData,
-	loadTurtleUtilData = LoadMinePlusData,
+	saveTurtleUtilData = SaveTurtleUtilData,
+	loadTurtleUtilData = LoadTurtleUtilData,
 	clearSaveData = ClearSavedata,
 	fuelUp = FuelUp,
 	checkFuel = CheckFuel,
