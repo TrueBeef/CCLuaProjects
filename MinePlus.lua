@@ -1,11 +1,11 @@
 turtleUtil = require("TurtleMovementUtil")
 
-versionNumber = " -== Mine Plus v1.1.18 ==- "
+versionNumber = " -== Mine Plus v1.2.0 ==- "
 
 local function Return_DoneMining()
 	term.clear()
 	term.setCursorPos(1,1)
-	term.write("We're done mining!'")
+	term.write("We're done mining!")
 	term.setCursorPos(1,2)
 	
 	turtleUtil.goToPos(vector.new(0, 0, 0))	
@@ -100,7 +100,6 @@ local function TravelAndMineZ(desiredDepth)
 	return false
 end
 
-
 local function TravelAndMine(travelPos)
 	local targetPos = vector.new(travelPos.x, travelPos.y, travelPos.z)
 	turtleUtil.goToPos(targetPos)
@@ -111,10 +110,9 @@ local function TravelAndMine(travelPos)
 	return turtleUtil.getLocalData()
 end
 
-
 local function CheckIfAtEnd(layMaxW, layMaxL, layMaxD)
 	local currentDirection, turtlePos = turtleUtil.getLocalData()
-	if(math.fmod(math.abs(turtlePos.z), 6) == 0) then
+	if(math.fmod(turtlePos.z, 6) == 0) then
 		if(turtlePos.y == layMaxW) then
 			-- Are we supposed to be at the top or bottom?
 			if(math.fmod(layMaxW, 2) == 0 and turtlePos.x == layMaxL) then
@@ -130,11 +128,9 @@ local function CheckIfAtEnd(layMaxW, layMaxL, layMaxD)
 		if(turtlePos.y == 0 and turtlePos.x == 1) then
 			return true
 		end
-	end	
-
+	end
 	return false
 end
-
 
 local function MineLayer(layMaxW, layMaxL, layMaxD)
 	local currentDirection, turtlePos = turtleUtil.getLocalData()
@@ -143,68 +139,95 @@ local function MineLayer(layMaxW, layMaxL, layMaxD)
 	-- Every other column we swap which direction we're going. Thus the modulo.
 	-- Y Starts at zero.
 	if(math.fmod(turtlePos.y, 2) == 0) then
-		if(turtlePos.x == 1) then
-			turtle.digUp()
-			turtle.digDown()
-			targetPos = vector.new(turtlePos.x + 1, turtlePos.y, turtlePos.z)
-			currentDirection, turtlPos = TravelAndMine(targetPos)
-		elseif(turtlePos.x < layMaxL) then
-			local targetPos = vector.new(turtlePos.x + 1, turtlePos.y, turtlePos.z)
-			currentDirection, turtlPos = TravelAndMine(targetPos)
-		end
+		
+		if(math.fmod(turtlePos.z, 6) == 0) then
+			if(turtlePos.x == 1) then
+				turtle.digUp()
+				turtle.digDown()
+				targetPos = vector.new(turtlePos.x + 1, turtlePos.y, turtlePos.z)
+				currentDirection, turtlPos = TravelAndMine(targetPos)
+			elseif(turtlePos.x < layMaxL) then
+				local targetPos = vector.new(turtlePos.x + 1, turtlePos.y, turtlePos.z)
+				currentDirection, turtlPos = TravelAndMine(targetPos)
+			end		
 
-		-- We need to increase/decrase our Y coord
-		if(turtlePos.x == layMaxL) then		
-			-- Check if we're going up or down
-			-- We use a mod of 6 since the turtle goes down 3 blocks every layer
-			-- Every other layer we swap which direction we're going. Thus the modulo.
-			if(math.fmod(math.abs(turtlePos.z), 6) == 0) then
-				if(turtlePos.y < layMaxW) then
-					targetPos = vector.new(turtlePos.x, turtlePos.y + 1, turtlePos.z)
-				end
-			else
-				if(turtlePos.y > 0) then
-					targetPos = vector.new(turtlePos.x, turtlePos.y - 1, turtlePos.z)
+			--Layer one
+			if(turtlePos.x == layMaxL) then -- Are we as far forward as we can get?
+				if(turtlePos.y < layMaxW) then -- Are we still not at the max width?
+					targetPos = vector.new(turtlePos.x, turtlePos.y + 1, turtlePos.z) -- Go to next column
+					currentDirection, turtlPos = TravelAndMine(targetPos)
 				end
 			end
+		else
 
-			currentDirection, turtlPos = TravelAndMine(targetPos)
-		end
-	else
-		if(turtlePos.x == layMaxL) then
-			turtle.digUp()
-			turtle.digDown()
-			targetPos = vector.new(turtlePos.x - 1, turtlePos.y, turtlePos.z)
-			currentDirection, turtlPos = TravelAndMine(targetPos)
-		elseif(turtlePos.x > 1) then
-			local targetPos = vector.new(turtlePos.x - 1, turtlePos.y, turtlePos.z)
-			currentDirection, turtlPos = TravelAndMine(targetPos)
-		end
-
-		-- We need to increase/decrase our Y coord
-		-- X Starts at 1
-		if(turtlePos.x == 1) then		
-			-- Check if we're going up or down
-			-- We use a mod of 6 since the turtle goes down 3 blocks every layer
-			if(math.fmod(math.abs(turtlePos.z), 6) == 0) then
-				if(turtlePos.y < layMaxW) then
-					targetPos = vector.new(turtlePos.x, turtlePos.y + 1, turtlePos.z)
-				end
-			else
-				if(turtlePos.y > 0) then
-					targetPos = vector.new(turtlePos.x, turtlePos.y - 1, turtlePos.z)
-				end
+			if(turtlePos.x == layMaxL) then
+				turtle.digUp()
+				turtle.digDown()
+				targetPos = vector.new(turtlePos.x - 1, turtlePos.y, turtlePos.z)
+				currentDirection, turtlPos = TravelAndMine(targetPos)
+			elseif(turtlePos.x > 1) then
+				local targetPos = vector.new(turtlePos.x - 1, turtlePos.y, turtlePos.z)
+				currentDirection, turtlPos = TravelAndMine(targetPos)
 			end
 
-			currentDirection, turtlPos = TravelAndMine(targetPos)
+			--Layer two
+			if(turtlePos.x == 1) then
+				if(turtlePos.y > 0) then
+					targetPos = vector.new(turtlePos.x, turtlePos.y - 1, turtlePos.z)
+					currentDirection, turtlPos = TravelAndMine(targetPos)
+				end
+			end
+		end
+
+	else -- If we are on an alternate column (Width)
+		if(math.fmod(turtlePos.z, 6) == 0) then			
+
+			if(turtlePos.x == layMaxL) then
+				turtle.digUp()
+				turtle.digDown()
+				targetPos = vector.new(turtlePos.x - 1, turtlePos.y, turtlePos.z)
+				currentDirection, turtlPos = TravelAndMine(targetPos)
+			elseif(turtlePos.x > 1) then
+				local targetPos = vector.new(turtlePos.x - 1, turtlePos.y, turtlePos.z)
+				currentDirection, turtlPos = TravelAndMine(targetPos)
+			end
+		
+			--Layer one
+			if(turtlePos.x == 1) then -- Are we as far forward as we can get?
+				if(turtlePos.y < layMaxW) then -- Are we still not at the max width?
+					targetPos = vector.new(turtlePos.x, turtlePos.y + 1, turtlePos.z) -- Go to next column
+					currentDirection, turtlPos = TravelAndMine(targetPos)
+				end
+			end			
+
+		else
+
+			if(turtlePos.x == 1) then
+				turtle.digUp()
+				turtle.digDown()
+				targetPos = vector.new(turtlePos.x + 1, turtlePos.y, turtlePos.z)
+				currentDirection, turtlPos = TravelAndMine(targetPos)
+			elseif(turtlePos.x < layMaxL) then
+				local targetPos = vector.new(turtlePos.x + 1, turtlePos.y, turtlePos.z)
+				currentDirection, turtlPos = TravelAndMine(targetPos)
+			end	
+
+			--Layer two
+			if(turtlePos.x == layMaxL) then
+				if(turtlePos.y > 0) then
+					targetPos = vector.new(turtlePos.x, turtlePos.y - 1, turtlePos.z)
+					currentDirection, turtlPos = TravelAndMine(targetPos)
+				end
+			end
 		end
 	end
 
-	
-	print("x: " .. turtlePos.x .. ", y: " .. turtlePos.y .. ", z: " .. turtlePos.z)
+
+	currentDirection, turtlePos = turtleUtil.getLocalData()
+	print("x: " .. turtlePos.x .. ", y: " .. turtlePos.y .. ", z: " .. turtlePos.z)	
 	
 	-- Handle depth
-	if(CheckIfAtEnd() == true) then
+	if(CheckIfAtEnd(layMaxW, layMaxL, layMaxD) == true) then
 		print("We're at the end")			
 		TravelAndMineZ(layMaxD)
 	end
@@ -219,20 +242,19 @@ local function Quarry(LayerWidth, LayerLength, LayerDepth)
 		turtle.dig()
 		turtleUtil.moveForward()
 	end	
-
 	
 	local isDone = false
 	while(isDone == false) do
 		local currentDirection, turtlePos = turtleUtil.getLocalData()
 		MineLayer(layW, layL, layD)
 		
-		if(turtlePos.z >= layD and CheckIfAtEnd() == true) then
+		if(math.abs(turtlePos.z) >= math.abs(layD) and CheckIfAtEnd(layW, layL, layD) == true) then
 			isDone = true
 		end
 	end	
 end
 
-function MinePLusInit ()
+function MinePlusInit ()
 	term.clear()
 	term.setCursorPos(1,1)
 	term.write(versionNumber)
@@ -294,4 +316,4 @@ function MinePLusInit ()
 	
 end
 
-MinePLusInit()
+MinePlusInit()
