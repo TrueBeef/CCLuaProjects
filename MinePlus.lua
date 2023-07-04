@@ -83,15 +83,15 @@ local function Return_FullInventory()
 	SaveMinePlusData()
 	term.clear()
 	term.setCursorPos(1,1)
-	term.write("Our inventory is close to full!")
+	term.write("My inventory is close to full!")
 	term.setCursorPos(1,2)
-	term.write("Empty and press enter.")
+	term.write("Please empty it before I continue.")
 	term.setCursorPos(1,3)
 	turtleUtil.goToPos(vector.new(0, 0, 0))
 
 	-- Sleeps for 5 seconds and checks inventory again.
 	-- All items must be gone.
-	sleep(5)
+	sleep(15)
 
 	local totalItems, slotsWithItems = turtleUtil.checkInventory()
 	if(totalItems ~= 0) then
