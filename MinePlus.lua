@@ -60,13 +60,6 @@ local function LoadMinePlusData()
 	print("LastPos: " .. lastPos)
 end
 
-local function CheckForLoadData()
-	if(fs.exists("/Seanware/Savedata/MinePlusSaveData.json")) then
-		LoadMinePlusData()
-		BeginMineProcess()
-	end
-end
-
 local function Return_DoneMining()
 	term.clear()
 	term.setCursorPos(1,1)
@@ -343,6 +336,15 @@ local function BeginMineProcess()
 	end
 end
 
+local function CheckForLoadData()
+	if(fs.exists("/Seanware/Savedata/MinePlusSaveData.json")) then
+		LoadMinePlusData()
+		BeginMineProcess()
+		return true
+	else
+		return false
+	end
+end
 
 local function MinePlusInit ()
 	term.clear()
@@ -426,8 +428,11 @@ local function MinePlusInit ()
 		SaveMinePlusData()
 	end
 
-
 	BeginMineProcess()
 end
 
-MinePlusInit()
+if(CheckForLoadData() == false) then
+	MinePlusInit()
+end
+
+

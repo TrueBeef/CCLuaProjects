@@ -20,15 +20,27 @@ function TurtleToBulk(turtle)
 	chestTable = ListChests()
 	
 	for i=1,16 do
-		itemStack = turtle.getItemDetail(i)
+		turtleItem = turtle.getItemDetail(i)
+
+		selectedChestSlot = nil
+
 		--Loop through turtle inventory
 		for _, chest in pairs(chestTable) do
 			-- find a chest with an empty slot.
 			for j=1,chest.size() do
 				local item = chest.getItemDetail(j)
 
-				if(item == nil) then
+				if(item ~= nil) then
+					-- Check if item name is the same as our turtleItem name
+					if(item.name == turtleItem.name) then
+						local remainingSpace = (item.maxCount - item.count)
+
+					end
 				end
+			end
+
+			if(selectedChestSlot ~= nil) then
+				break
 			end
 		end
 	end
