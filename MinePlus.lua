@@ -6,7 +6,7 @@ json = require("json")
 
 turtleUtil = require("TurtleMovementUtil")
 
-versionNumber = " -== Mine Plus v1.2.6 ==- "
+versionNumber = " -== Mine Plus v1.2.7 ==- "
 
 mineLayerLength = 0
 mineLayerWidth = 0
@@ -317,12 +317,11 @@ local function Quarry(LayerWidth, LayerLength, LayerDepth)
 	if(turtleUtil.moveForward() == false) then
 		turtle.dig()
 		turtleUtil.moveForward()
-		
-		if(plummet == "y") then	
-			FindBottom()
-		end
-
 	end	
+
+	if(plummet == "y") then	
+		FindBottom()
+	end
 	
 	local isDone = false
 	while(isDone == false) do
