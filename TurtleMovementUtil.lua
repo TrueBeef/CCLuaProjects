@@ -41,10 +41,10 @@ local function SaveTurtleUtilData()
 			localPosY = localPos.y,
 			localPosZ = localPos.z,
 			currentDir = currentFacingDir,
-			currentlyGoingTo = currentlyGoingTo
+			currentlyGoingTo = currentlyGoingTo,
 			goingToPosX = goingToPos.x,
 			goingToPosY = goingToPos.y,
-			goingToPosZ = goingToPos.z,
+			goingToPosZ = goingToPos.z
 		}
 
 	encodedJson = json.encode(saveData)
