@@ -341,6 +341,9 @@ end
 local function CheckForLoadData()
 	if(fs.exists("/Seanware/Savedata/MinePlusSaveData.json")) then
 		LoadMinePlusData()
+		--local currentDirection, turtlePos = turtleUtil.getLocalData()
+		--turtleUtil.goToPos(turtlePos)
+
 		BeginMineProcess()
 		return true
 	else

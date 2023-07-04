@@ -37,8 +37,10 @@ local function WaitForTurtle( )
 	while(true)	do
 		-- Look for turtles
 		turtleTable = ListTurtles()
-		print("Looking for turtle...")
+		print("What chest ID is our buffer? (Num only)")
+		bufferID = read()
 
+		print("Looking for turtle...")
 		for _, turtle in pairs(turtleTable) do
 			-- We have turtles?
 			
