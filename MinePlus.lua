@@ -6,7 +6,7 @@ json = require("json")
 
 turtleUtil = require("TurtleMovementUtil")
 
-versionNumber = " -== Mine Plus v1.2.8 ==- "
+versionNumber = " -== Mine Plus v1.3.0 ==- "
 
 mineLayerLength = 0
 mineLayerWidth = 0
@@ -70,9 +70,6 @@ local function Return_FullInventory()
 	term.setCursorPos(1,3)
 	turtleUtil.goToPos(vector.new(0, 0, 0))
 	SaveMinePlusData()
-	
-	-- Attempts to connect us to a network
-	turtle.placeDown()
 
 	-- Sleeps for 5 seconds and checks inventory again.
 	-- All items must be gone.
