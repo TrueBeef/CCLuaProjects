@@ -112,9 +112,10 @@ local function Return_OutOfFuel()
 	end	
 
 	-- We're good to go.
-	turtleUtil.goToPos(lastPos)
+	turtleUtil.moveBackward()
 	currentlyLowFuel = false
 	SaveMinePlusData()
+	turtleUtil.goToPos(lastPos)
 end
 
 local function LoadMinePlusData()
