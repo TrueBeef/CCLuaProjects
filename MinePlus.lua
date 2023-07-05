@@ -60,8 +60,7 @@ local function Return_DoneMining()
 end
 
 local function Return_FullInventory()
-	currentlyFullInventory = true
-	SaveMinePlusData()
+	currentlyFullInventory = true	
 
 	term.clear()
 	term.setCursorPos(1,1)
@@ -70,6 +69,7 @@ local function Return_FullInventory()
 	term.write("Please empty it before I continue.")
 	term.setCursorPos(1,3)
 	turtleUtil.goToPos(vector.new(0, 0, 0))
+	SaveMinePlusData()
 	
 	-- Attempts to connect us to a network
 	turtle.placeDown()
@@ -89,15 +89,15 @@ local function Return_FullInventory()
 	turtleUtil.goToPos(lastPos)
 end
 
-
 local function Return_OutOfFuel()
 	currentlyLowFuel = true
-	SaveMinePlusData()
 
 	local currentDirection, turtlePos = turtleUtil.getLocalData()
 	local costToHome = (math.abs(turtlePos.x) + math.abs(turtlePos.y) + math.abs(turtlePos.z)) + 1
 
 	turtleUtil.goToPos(vector.new(0, 0, 0))	
+	
+	SaveMinePlusData()
 	print("Add fuel so we may continue.")
 
 	while(turtleUtil.checkFuel(costToHome)) do
