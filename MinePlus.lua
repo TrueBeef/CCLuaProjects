@@ -6,7 +6,7 @@ json = require("json")
 
 turtleUtil = require("TurtleMovementUtil")
 
-versionNumber = " -== Mine Plus v1.3.3 ==- "
+versionNumber = " -== Mine Plus v1.3.4 ==- "
 
 mineLayerLength = 0
 mineLayerWidth = 0
@@ -441,7 +441,7 @@ local function CheckForLoadData()
 		if(mineVerticallyRequest ~= 0) then
 			-- We were mining vertically when we saved.
 			-- Take the request ammount and subtract the actually moved amount to get remaining movements
-			MineVertically((mineVerticallyRequest, miningVertically))
+			MineVertically((mineVerticallyRequest - miningVertically))
 		end
 
 		-- This is unlikely.
