@@ -57,6 +57,7 @@ local function Return_DoneMining()
 	turtleUtil.faceDirection(turtleUtil.direction.North)
 
 	turtleUtil.clearSaveData()
+	ClearSaveData()
 end
 
 local function Return_FullInventory()

@@ -8,27 +8,36 @@ json = require("json")
 
 -- Globals --
 turnDirection = { None = 0, Left = 1, Right = 2 }
-facingDirection = { North = 1, East = 2, South = 3, West = 4 }
+facingDirection = {North = 1, East = 2, South = 3, West = 4 }
 miningQuadrant = { Left = 0, Right = 1}
 
 mineLayerWidth = 0
 mineLayerLength = 0
 
-localPos = vector.new(0, 0, 0)
+localPos = nil
 
 lastTurnDir = turnDirection.None
-currentFacingDir = facingDirection.North
+currentFacingDir = facingDirection.Nil
 
 currentlyGoingTo = false
 goingToPos = vector.new(0, 0, 0)
 
 local function InitializeGlobals()
 	-- Prolly dont need to do these but eh
-	localPos = vector.new(0, 0, 0)
+	if(localPos.x == nil) then
+		localPos = vector.new(0, 0, 0)
+	end
 
 	lastTurnDir = turnDirection.None
 	currentFacingDir = facingDirection.North
 end
+
+local function ClearSaveData()
+	if(fs.exists("/Seanware/Savedata/TurtleUtilSavedata.json")) then
+		fs.delete("/Seanware/Savedata/TurtleUtilSavedata.json")
+	end
+end
+
 --Saving and loading the last known position of this turtle.
 --Helps us not get lost.
 local function SaveTurtleUtilData()
@@ -50,12 +59,6 @@ local function SaveTurtleUtilData()
 	encodedJson = json.encode(saveData)
 	saveFile.write(encodedJson) --writes all the stuff in handle to the file defined in 'saveTo'
 	saveFile.close()
-end
-
-local function ClearSaveData()
-	if(fs.exists("/Seanware/Savedata/TurtleUtilSavedata.json")) then
-		fs.delete("/Seanware/Savedata/TurtleUtilSavedata.json")
-	end
 end
 
 local function GetLocalPositionData()
@@ -336,7 +339,7 @@ return {
 	initGlobals = InitializeGlobals,
 	saveTurtleUtilData = SaveTurtleUtilData,
 	loadTurtleUtilData = LoadTurtleUtilData,
-	clearSaveData = ClearSavedata,
+	clearSaveData = ClearSaveData,
 	fuelUp = FuelUp,
 	checkFuel = CheckFuel,
 	moveForward = MoveForwardUtil,
