@@ -8,7 +8,7 @@ json = require("json")
 
 -- Globals --
 turnDirection = { None = 0, Left = 1, Right = 2 }
-facingDirection = {North = 1, East = 2, South = 3, West = 4 }
+facingDirection = { North = 1, East = 2, South = 3, West = 4 }
 miningQuadrant = { Left = 0, Right = 1}
 
 mineLayerWidth = 0
@@ -17,14 +17,14 @@ mineLayerLength = 0
 localPos = nil
 
 lastTurnDir = turnDirection.None
-currentFacingDir = facingDirection.Nil
+currentFacingDir = facingDirection.North
 
 currentlyGoingTo = false
 goingToPos = vector.new(0, 0, 0)
 
 local function InitializeGlobals()
 	-- Prolly dont need to do these but eh
-	if(localPos.x == nil) then
+	if(localPos == nil) then
 		localPos = vector.new(0, 0, 0)
 	end
 

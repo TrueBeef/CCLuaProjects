@@ -358,8 +358,6 @@ local function Quarry(LayerWidth, LayerLength, LayerDepth)
 end
 
 local function BeginMineProcess()
-
-	turtleUtil.initGlobals()
 	turtleUtil.fuelUp()
 	CheckResources()
 
@@ -461,6 +459,8 @@ local function MinePlusInit ()
 	print("Returning Home: " .. returnHome)	
 	print("Mining!")
 
+	turtleUtil.initGlobals()
+	
 	if(useSaveLoad == "y") then
 		SaveMinePlusData()
 	end
