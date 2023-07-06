@@ -99,6 +99,16 @@ local function LoadMinePlusData()
 	print("currentlyDoneMining" .. tostring(currentlyDoneMining))	
 end
 
+-- An override of base util function. Allows us to save states.
+local function GoToPos(pos)
+	SaveMinePlusData()
+	goingToPos = pos
+	turtleUtil.goToPos(pos)
+	--We're done.
+	goingToPos = vector.new(0, 0, 0)
+	SaveMinePlusData()
+end
+
 local function Return_DoneMining()
 	term.clear()
 	term.setCursorPos(1,1)
@@ -185,16 +195,6 @@ local function CheckResources()
 		lastPos = turtlePos
 		Return_OutOfFuel()
 	end
-end
-
--- An override of base util function. Allows us to save states.
-local function GoToPos(pos)
-	SaveMinePlusData()
-	goingToPos = pos
-	turtleUtil.goToPos(pos)
-	--We're done.
-	goingToPos = vector.new(0, 0, 0)
-	SaveMinePlusData()
 end
 
 local function FindBottom()
