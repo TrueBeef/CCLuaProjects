@@ -11,8 +11,13 @@ versionNumber = " -== Mine Plus v1.3.0 ==- "
 mineLayerLength = 0
 mineLayerWidth = 0
 mineLayerDepth = 0
-currentlyLowFuel = false
-currentlyFullInventory = false
+
+currentlyLowFuel = false -- Were we going home to refuel?
+currentlyFullInventory = false -- Were we going home for a full inventory?
+
+mineVerticallyRequest = 0 -- The amount we requested to mine vertically.
+miningVertically = 0 -- The ammount we mined vertically.
+
 returnHome = ""
 plummet = ""
 lastPos = vector.new(0, 0, 0)
@@ -45,6 +50,35 @@ local function SaveMinePlusData()
 	encodedJson = json.encode(saveData)
 	saveFile.write(encodedJson) --writes all the stuff in handle to the file defined in 'saveTo'
 	saveFile.close()
+end
+
+local function LoadMinePlusData()
+	-- Also make the Movement Util load
+	turtleUtil.loadTurtleUtilData()
+
+	print("Loading saved data...")
+
+	local saveFile = fs.open("/Seanware/Savedata/MinePlusSaveData.json", "r")
+	local encodedDat = saveFile.readAll()
+	saveData = json.decode(encodedDat)
+
+	mineLayerLength = saveData["mineLayerLength"]
+	mineLayerWidth = saveData["mineLayerWidth"]
+	mineLayerDepth = saveData["mineLayerDepth"]
+	currentlyFullInventory = saveData["currentlyFullInventory"]
+	currentlyLowFuel = saveData["currentlyLowFuel"]
+	lastPos = vector.new(saveData["lastPosX"], saveData["lastPosY"], saveData["lastPosZ"])
+	returnHome = saveData["returnHome"]
+
+	print("L: " .. mineLayerLength)
+	print("W: " .. mineLayerWidth)
+	print("D: " .. mineLayerDepth)
+	print("Home: " .. returnHome)
+	print("LastPos X: " .. lastPos.x)
+	print("LastPos Y: " .. lastPos.y)
+	print("LastPos Z: " .. lastPos.z)
+	print("currentlyLowFuel: " .. tostring(currentlyLowFuel))
+	print("currentlyFullInventory" .. tostring(currentlyFullInventory))	
 end
 
 local function Return_DoneMining()
@@ -116,41 +150,6 @@ local function Return_OutOfFuel()
 	turtleUtil.goToPos(lastPos)
 end
 
-local function LoadMinePlusData()
-	-- Also make the Movement Util load
-	turtleUtil.loadTurtleUtilData()
-
-	print("Loading saved data...")
-
-	local saveFile = fs.open("/Seanware/Savedata/MinePlusSaveData.json", "r")
-	local encodedDat = saveFile.readAll()
-	saveData = json.decode(encodedDat)
-
-	mineLayerLength = saveData["mineLayerLength"]
-	mineLayerWidth = saveData["mineLayerWidth"]
-	mineLayerDepth = saveData["mineLayerDepth"]
-	currentlyFullInventory = saveData["currentlyFullInventory"]
-	currentlyLowFuel = saveData["currentlyLowFuel"]
-	lastPos = vector.new(saveData["lastPosX"], saveData["lastPosY"], saveData["lastPosZ"])
-	returnHome = saveData["returnHome"]
-
-	print("L: " .. mineLayerLength)
-	print("W: " .. mineLayerWidth)
-	print("D: " .. mineLayerDepth)
-	print("Home: " .. returnHome)
-	print("LastPos X: " .. lastPos.x)
-	print("LastPos Y: " .. lastPos.y)
-	print("LastPos Z: " .. lastPos.z)
-	print("currentlyLowFuel: " .. tostring(currentlyLowFuel))
-	print("currentlyFullInventory" .. tostring(currentlyFullInventory))
-
-	if(currentlyLowFuel) then
-		Return_OutOfFuel()
-	elseif(currentlyFullInventory) then
-		Return_FullInventory()
-	end
-end
-
 local function CheckResources()
 	local totalItems, slotsWithItems = turtleUtil.checkInventory()
 	local currentDirection, turtlePos = turtleUtil.getLocalData() -- We need the current position so that we can come back if we end up going to refuel.
@@ -183,16 +182,50 @@ local function FindBottom()
 	return true		
 end
 
+-- Takes a pos or neg param for how many blocks we are mining. Usually 3.
+local function MineVertically(numBlocks)
+	mineVerticallyRequest = numBlocks
+	for i=1, math.abs(numBlocks) do
+		if(numBlocks > 0) then
+			-- We're mining Up.
+			if(turtleUtil.moveUp() == false) then
+				turtle.digUp()
+				turtleUtil.moveUp()
+			end
+			
+			miningVertically = i
+			SaveMinePlusData() 
+
+		elseif(numBlocks < 0) then
+			-- We're mining down.
+			if(turtleUtil.moveDown() == false) then
+				turtle.digDown()
+				turtleUtil.moveDown()
+			end
+			
+			miningVertically = -i
+			SaveMinePlusData() 
+		else
+			--We're doing nothing.
+		end
+	end
+
+	-- We're done!
+	mineVerticallyRequest = 0
+	miningVertically = 0
+	SaveMinePlusData() 
+end
+
 local function TravelAndMineZ(desiredDepth)
 	local currentDirection, turtlePos = turtleUtil.getLocalData()
 	
 	if(desiredDepth > 0 and turtlePos.z < desiredDepth) then
-		turtleUtil.mineUp()
+		MineVertically(3)
 		return true
 	end
 
 	if(desiredDepth < 0 and turtlePos.z > desiredDepth) then
-		turtleUtil.mineDown()
+		MineVertically(-3)
 		return true
 	end			
 
@@ -321,13 +354,10 @@ local function MineLayer(layMaxW, layMaxL, layMaxD)
 		end
 	end
 
-
-	currentDirection, turtlePos = turtleUtil.getLocalData()
-	print("x: " .. turtlePos.x .. ", y: " .. turtlePos.y .. ", z: " .. turtlePos.z)	
+	currentDirection, turtlePos = turtleUtil.getLocalData()	
 	
 	-- Handle depth
 	if(CheckIfAtEnd(layMaxW, layMaxL, layMaxD) == true) then
-		print("We're at the end")			
 		TravelAndMineZ(layMaxD)
 	end
 end
@@ -371,8 +401,29 @@ end
 local function CheckForLoadData()
 	if(fs.exists("/Seanware/Savedata/MinePlusSaveData.json")) then
 		LoadMinePlusData()
-		--local currentDirection, turtlePos = turtleUtil.getLocalData()
-		--turtleUtil.goToPos(turtlePos)
+
+		currentDirection, turtlePos = turtleUtil.getLocalData()	
+
+		if(currentlyLowFuel) then
+			-- We were returning for fuel when we saved.
+			Return_OutOfFuel()
+		elseif(currentlyFullInventory) then
+			-- We were returning for a full inventory when we saved.
+			Return_FullInventory()
+		end
+
+		--Check if we were going vertically through layers.
+		if(mineVerticallyRequest ~= 0) then
+			-- We were mining vertically when we saved.
+			-- Take the request ammount and subtract the actually moved amount to get remaining movements
+			MineVertically((mineVerticallyRequest, miningVertically))
+		end
+
+		-- Just make sure we mine the above and below blocks.
+		if(turtlePos ~= vector.new(0, 0, 0)) then
+			turtle.digUp()
+			turtle.digDown()
+		end
 
 		BeginMineProcess()
 		return true

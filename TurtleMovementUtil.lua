@@ -227,46 +227,6 @@ local function FaceDirection(targDirection)
 	end	
 end
 
--- Mines down 3 blocks such that 
--- a block is above, in front, and below 
--- the turtle.
-local function MineDownUtil()
-	for i=1,3 do
-		if(MoveDownUtil() == false) then
-			turtle.digDown()
-			MoveDownUtil()
-		end
-	end
-end
-
-local function MineUpUtil()
-	for i=1,3 do
-		if(MoveUpUtil() == false) then
-			turtle.digUp()
-			MoveUpUtil()
-		end
-	end
-end
-
--- Mines forwards X times. 
--- Checks fuel levels after every move.
-local function MineForwards (MineForwardsCount)	
-	local mineFwdNum = tonumber(MineForwardsCount)	
-	for i = 1, mineFwdNum, 1 do
-		turtle.digUp()
-		turtle.digDown()
-
-		if(i ~= mineFwdNum) then
-			if(MoveForwardUtil() == false)then
-				turtle.dig()
-				MoveForwardUtil()
-			end
-		end
-
-		CheckFuel(mineFwdNum + mineLayerWidth)
-	end	
-end
-
 local function GoToPosition(targetPos)
 	-- Travel Up or down
 	if(targetPos.z > localPos.z) then		
@@ -349,10 +309,7 @@ return {
 	turnRight = TurnRightUtil,
 	turnLeft = TurnLeftUtil,
 	turnAround = TurnAround,
-	faceDirection = FaceDirection,
-	mineForward = MineForwards,	
-	mineDown = MineDownUtil,
-	mineUp = MineUpUtil,	
+	faceDirection = FaceDirection,	
 	goToPos = GoToPosition,	
 	checkInventory = CheckInventoryFullnes,
 	getLocalData = GetLocalPositionData,
