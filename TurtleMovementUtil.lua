@@ -104,7 +104,6 @@ end
 
 local function MoveBackwardUtil()
 	if(turtle.back()) then
-		SaveTurtleUtilData()
 
 		if(currentFacingDir == facingDirection.North) then
 			-- Sub to X Coord
@@ -119,6 +118,7 @@ local function MoveBackwardUtil()
 			-- Add to Y coord
 			localPos = localPos + vector.new(0, 1, 0)
 		end
+		SaveTurtleUtilData()
 		return true
 	else
 		return false
@@ -128,7 +128,6 @@ end
 -- Moves the turtle while also tallying what directions we've moved
 local function MoveForwardUtil()
 	if(turtle.forward()) then
-		SaveTurtleUtilData()
 
 		if(currentFacingDir == facingDirection.North) then
 			-- Add to X Coord
@@ -143,6 +142,8 @@ local function MoveForwardUtil()
 			-- Subtract Y coord
 			localPos = localPos - vector.new(0, 1, 0)
 		end
+		
+		SaveTurtleUtilData()
 		return true
 	else
 		return false
@@ -181,6 +182,7 @@ local function TurnRightUtil()
 		currentFacingDir = currentFacingDir + 1
 	end
 
+	SaveTurtleUtilData()
 	turtle.turnRight()
 end
 
@@ -193,6 +195,7 @@ local function TurnLeftUtil()
 		currentFacingDir = currentFacingDir - 1
 	end
 
+	SaveTurtleUtilData()
 	turtle.turnLeft()
 end
 

@@ -6,7 +6,7 @@ json = require("json")
 
 turtleUtil = require("TurtleMovementUtil")
 
-versionNumber = " -== Mine Plus v1.3.5 ==- "
+versionNumber = " -== Mine Plus v1.3.6 ==- "
 
 mineLayerLength = 0
 mineLayerWidth = 0
@@ -79,10 +79,16 @@ local function LoadMinePlusData()
 	lastPos = vector.new(saveData["lastPosX"], saveData["lastPosY"], saveData["lastPosZ"])
 	returnHome = saveData["returnHome"]
 
+	local currentDirection, turtlePos = turtleUtil.getLocalData()	
+
+	print("Home: " .. returnHome)
 	print("L: " .. mineLayerLength)
 	print("W: " .. mineLayerWidth)
 	print("D: " .. mineLayerDepth)
-	print("Home: " .. returnHome)
+	print("Current Pos X: " .. turtlePos.x)
+	print("Current Pos Y: " .. turtlePos.y)
+	print("Current Pos Z: " .. turtlePos.z)
+	print("Current direction: " .. currentDirection)
 	print("LastPos X: " .. lastPos.x)
 	print("LastPos Y: " .. lastPos.y)
 	print("LastPos Z: " .. lastPos.z)
@@ -427,7 +433,7 @@ local function CheckForLoadData()
 	if(fs.exists("/Seanware/Savedata/MinePlusSaveData.json")) then
 		LoadMinePlusData()
 
-		currentDirection, turtlePos = turtleUtil.getLocalData()	
+		local currentDirection, turtlePos = turtleUtil.getLocalData()	
 
 		if(currentlyLowFuel) then
 			-- We were returning for fuel when we saved.
