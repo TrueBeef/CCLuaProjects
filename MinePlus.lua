@@ -6,7 +6,7 @@ json = require("json")
 
 turtleUtil = require("TurtleMovementUtil")
 
-versionNumber = " -== Mine Plus v1.3.0 ==- "
+versionNumber = " -== Mine Plus v1.3.3 ==- "
 
 mineLayerLength = 0
 mineLayerWidth = 0
@@ -14,9 +14,12 @@ mineLayerDepth = 0
 
 currentlyLowFuel = false -- Were we going home to refuel?
 currentlyFullInventory = false -- Were we going home for a full inventory?
+currentlyDoneMining = false -- We were heading home cause we're done!
 
 mineVerticallyRequest = 0 -- The amount we requested to mine vertically.
 miningVertically = 0 -- The ammount we mined vertically.
+
+goingToPos = vector.new(0, 0, 0)
 
 returnHome = ""
 plummet = ""
@@ -42,6 +45,9 @@ local function SaveMinePlusData()
 			returnHome = returnHome,
 			currentlyFullInventory = currentlyFullInventory,
 			currentlyLowFuel = currentlyLowFuel,
+			currentlyDoneMining = currentlyDoneMining,
+			mineVerticallyRequest = mineVerticallyRequest,
+			miningVertically = miningVertically,
 			lastPosX = lastPos.x,
 			lastPosY = lastPos.y,
 			lastPosZ = lastPos.z
@@ -67,6 +73,9 @@ local function LoadMinePlusData()
 	mineLayerDepth = saveData["mineLayerDepth"]
 	currentlyFullInventory = saveData["currentlyFullInventory"]
 	currentlyLowFuel = saveData["currentlyLowFuel"]
+	currentlyDoneMining = saveData["currentlyDoneMining"]
+	mineVerticallyRequest = saveData["mineVerticallyRequest"]
+	miningVertically = saveData["miningVertically"]
 	lastPos = vector.new(saveData["lastPosX"], saveData["lastPosY"], saveData["lastPosZ"])
 	returnHome = saveData["returnHome"]
 
@@ -77,8 +86,11 @@ local function LoadMinePlusData()
 	print("LastPos X: " .. lastPos.x)
 	print("LastPos Y: " .. lastPos.y)
 	print("LastPos Z: " .. lastPos.z)
+	print("mineVerticallyRequest: " .. mineVerticallyRequest)
+	print("miningVertically: " .. miningVertically)
 	print("currentlyLowFuel: " .. tostring(currentlyLowFuel))
 	print("currentlyFullInventory" .. tostring(currentlyFullInventory))	
+	print("currentlyDoneMining" .. tostring(currentlyDoneMining))	
 end
 
 local function Return_DoneMining()
@@ -87,7 +99,7 @@ local function Return_DoneMining()
 	term.write("We're done mining!")
 	term.setCursorPos(1,2)
 	
-	turtleUtil.goToPos(vector.new(0, 0, 0))	
+	GoToPos(vector.new(0, 0, 0))	
 	turtleUtil.faceDirection(turtleUtil.direction.North)
 
 	turtleUtil.clearSaveData()
@@ -103,7 +115,7 @@ local function Return_FullInventory()
 	term.setCursorPos(1,2)
 	term.write("Please empty it before I continue.")
 	term.setCursorPos(1,3)
-	turtleUtil.goToPos(vector.new(0, 0, 0))
+	GoToPos(vector.new(0, 0, 0))
 	SaveMinePlusData()
 
 	-- Sleeps for 5 seconds and checks inventory again.
@@ -118,7 +130,7 @@ local function Return_FullInventory()
 	turtleUtil.moveBackward()
 	currentlyFullInventory = false
 	SaveMinePlusData()
-	turtleUtil.goToPos(lastPos)
+	GoToPos(lastPos)
 end
 
 local function Return_OutOfFuel()
@@ -127,7 +139,7 @@ local function Return_OutOfFuel()
 	local currentDirection, turtlePos = turtleUtil.getLocalData()
 	local costToHome = (math.abs(turtlePos.x) + math.abs(turtlePos.y) + math.abs(turtlePos.z)) + 1
 
-	turtleUtil.goToPos(vector.new(0, 0, 0))	
+	GoToPos(vector.new(0, 0, 0))	
 	
 	SaveMinePlusData()
 	print("Add fuel so we may continue.")
@@ -147,7 +159,7 @@ local function Return_OutOfFuel()
 	turtleUtil.moveBackward()
 	currentlyLowFuel = false
 	SaveMinePlusData()
-	turtleUtil.goToPos(lastPos)
+	GoToPos(lastPos)
 end
 
 local function CheckResources()
@@ -167,6 +179,16 @@ local function CheckResources()
 		lastPos = turtlePos
 		Return_OutOfFuel()
 	end
+end
+
+-- An override of base util function. Allows us to save states.
+local function GoToPos(pos)
+	SaveMinePlusData()
+	goingToPos = pos
+	turtleUtil.goToPos(pos)
+	--We're done.
+	goingToPos = vector.new(0, 0, 0)
+	SaveMinePlusData()
 end
 
 local function FindBottom()
@@ -234,7 +256,7 @@ end
 
 local function TravelAndMine(travelPos)
 	local targetPos = vector.new(travelPos.x, travelPos.y, travelPos.z)
-	turtleUtil.goToPos(targetPos)
+	GoToPos(targetPos)
 	turtle.digUp()
 	turtle.digDown()
 	CheckResources()
@@ -410,6 +432,9 @@ local function CheckForLoadData()
 		elseif(currentlyFullInventory) then
 			-- We were returning for a full inventory when we saved.
 			Return_FullInventory()
+		elseif(currentlyDoneMining and returnHome == "y") then
+			-- We were heading home since we've finished the mine.
+			Return_DoneMining()
 		end
 
 		--Check if we were going vertically through layers.
@@ -418,6 +443,12 @@ local function CheckForLoadData()
 			-- Take the request ammount and subtract the actually moved amount to get remaining movements
 			MineVertically((mineVerticallyRequest, miningVertically))
 		end
+
+		-- This is unlikely.
+		-- We were in the middle of a go to pos command, and likely also have LastPos data
+		--if(goToPos ~= vector.new(0, 0, 0)) then
+		--	GoToPos(goToPos)
+		--end
 
 		-- Just make sure we mine the above and below blocks.
 		if(turtlePos ~= vector.new(0, 0, 0)) then
