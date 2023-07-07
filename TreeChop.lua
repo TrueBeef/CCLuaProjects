@@ -52,7 +52,7 @@ local function BeginTreeChop()
 	end
 
 	print("Prune adjacent blocks?")
-	if(CheckReadYN(read()) then
+	if(CheckReadYN(read())) then
 		pruneLeaves = true
 	end
 
