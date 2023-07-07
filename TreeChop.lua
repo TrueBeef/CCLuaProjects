@@ -58,7 +58,7 @@ local function BeginTreeChop()
 	end
 
 	print("Choping tree")
-	ChopTree(desiredHeight)
+	ChopTree(treeHeight)
 end
 
 
