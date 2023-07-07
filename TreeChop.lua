@@ -42,13 +42,11 @@ local function CheckReadYN(read)
 end
 
 
-local function BeginTreeChop()
-	::redo::
+local function BeginTreeChop()	
 	print("How high?")
-	success, readData = CheckReadNum(read()
+	local success, local readData = CheckReadNum(read()
 	if(~success)) then		
-		print("Sorry, too high. Try again.")
-		goto redo
+		print("Sorry, too high. Less than 100 blocks.")		
 	else
 		treeHeight = readData
 	end
