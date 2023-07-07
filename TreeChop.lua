@@ -23,6 +23,8 @@ function ChopTree( desiredHeight )
 		TurnAndMine()
 		turtleUtil.goToPos(vector.new(1, 0, i))		
 	end
+
+	turtleUtil.goToPos(vector.new(0, 0, 0))	
 end
 
 
