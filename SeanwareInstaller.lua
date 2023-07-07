@@ -63,6 +63,7 @@ local function InstallAdditionalModules()
 				break
 			end
 		end
+	end
 
 	term.clear()
 	term.setTextColor(colors.green)
