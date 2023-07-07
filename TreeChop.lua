@@ -27,7 +27,7 @@ end
 
 
 local function CheckReadNum(read)
-	if(tonumber(read) == nil)
+	if(tonumber(read) == nil) then
 		return false
 	elseif(tonumber(read) < 100) then
 		return true, read
