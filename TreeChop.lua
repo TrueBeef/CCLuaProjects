@@ -39,6 +39,7 @@ local function CheckReadYN(read)
 		return true
 	else
 		return false
+	end
 end
 
 
