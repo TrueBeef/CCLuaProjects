@@ -34,30 +34,39 @@ local function InstallAdditionalModules()
 	installMore = read()
 
 	if(installMore == "y") then
-		term.clear()
-		term.setCursorPos(1,1)
-		term.setTextColor(colors.orange)
-		term.write("~ SEANWARE Installer ~")
-		term.setTextColor(colors.white)
-		term.setCursorPos(1,2)				
-		term.write("Filename in CCLuaProjectsRepo:")
-		term.setCursorPos(1,3)
-		local repoFile = read()
+		local installing = true 
+		while(installing) do
+			term.clear()
+			term.setCursorPos(1,1)
+			term.setTextColor(colors.orange)
+			term.write("~ SEANWARE Installer ~")
+			term.setTextColor(colors.white)
+			term.setCursorPos(1,2)				
+			term.write("Filename in CCLuaProjectsRepo:")
+			term.setCursorPos(1,3)
+			local repoFile = read()
 
-		term.clear()
-		term.setCursorPos(1,1)
-		term.write("Selected Filename: " .. repoFile)
-		term.setCursorPos(1,2)
-		term.write("Save as + in directory: ")
-		term.setCursorPos(1,3)
-		local saveAs = read()
+			term.clear()
+			term.setCursorPos(1,1)
+			term.write("Selected Filename: " .. repoFile)
+			term.setCursorPos(1,2)
+			term.write("Save as + in directory: ")
+			term.setCursorPos(1,3)
+			local saveAs = read()
 
-		InstallFromGit(repoFile, saveAs)
-	else
-		term.clear()
-		term.setTextColor(colors.green)
-		print("Done Installing Modules.")
-	end
+			InstallFromGit(repoFile, saveAs)
+			
+			print("Install others? (y/n)")
+			loopedInstallMore = read()
+
+			if(loopedInstallMore ~= "y") then
+				break
+			end
+		end
+
+	term.clear()
+	term.setTextColor(colors.green)
+	print("Done Installing Modules.")
 end
 
 --Put all our things here we for sure want installed.
