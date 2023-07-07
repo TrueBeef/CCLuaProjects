@@ -21,6 +21,8 @@ miningVertically = 0 -- The ammount we mined vertically.
 
 goingToPos = vector.new(0, 0, 0)
 
+greatestZ = 0
+
 returnHome = ""
 plummet = ""
 lastPos = vector.new(0, 0, 0)
@@ -48,6 +50,7 @@ local function SaveMinePlusData()
 			currentlyDoneMining = currentlyDoneMining,
 			mineVerticallyRequest = mineVerticallyRequest,
 			miningVertically = miningVertically,
+			greatestZ = greatestZ,
 			lastPosX = lastPos.x,
 			lastPosY = lastPos.y,
 			lastPosZ = lastPos.z
@@ -198,27 +201,38 @@ local function CheckResources()
 end
 
 local function FindBottom()
+	local currentDirection, turtlePos = turtleUtil.getLocalData()
+
 	moveDown = true
 
 	while (moveDown) do
 		moveDown = turtleUtil.moveDown()
+		currentDirection, turtlePos = turtleUtil.getLocalData()
 	end
 
-	-- Go up one just to align with any previously mined portions.
-	turtleUtil.moveUp()
+	while(turtlePos.y == 0 and turtlePos.x == 1 and math.fmod(turtlePos.z, 6) ~= 0) do
+		turtleUtil.moveUp()
+	end	
 
 	return true		
 end
 
 -- Takes a pos or neg param for how many blocks we are mining. Usually 3.
 local function MineVertically(numBlocks)
-	mineVerticallyRequest = numBlocks
+	mineVerticallyRequest = numBlocks	
+
 	for i=1, math.abs(numBlocks) do
+	local currentDirection, turtlePos = turtleUtil.getLocalData()
+
 		if(numBlocks > 0) then
 			-- We're mining Up.
 			if(turtleUtil.moveUp() == false) then
 				turtle.digUp()
 				turtleUtil.moveUp()
+			end
+
+			if(turtlePos.z < greatestZ) then
+				greatestZ = greatestZ + 1
 			end
 			
 			miningVertically = i
@@ -229,6 +243,10 @@ local function MineVertically(numBlocks)
 			if(turtleUtil.moveDown() == false) then
 				turtle.digDown()
 				turtleUtil.moveDown()
+			end
+
+			if(turtlePos.z < greatestZ) then
+				greatestZ = greatestZ - 1
 			end
 			
 			miningVertically = -i
@@ -403,7 +421,7 @@ local function Quarry(LayerWidth, LayerLength, LayerDepth)
 		end	
 	end
 
-	if(plummet == "y") then	
+	if(plummet == "y" and greatestZ == 0) then	
 		FindBottom()
 	end
 	
