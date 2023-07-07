@@ -45,7 +45,7 @@ end
 local function BeginTreeChop()	
 	print("How high?")
 	local success, readData = CheckReadNum(read())
-	if(~success) then		
+	if(success == false) then		
 		print("Sorry, too high. Less than 100 blocks.")		
 	else
 		treeHeight = readData
