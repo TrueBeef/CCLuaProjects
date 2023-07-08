@@ -34,6 +34,7 @@ end
 
 local function ClearSaveData()
 	if(fs.exists("/Seanware/Savedata/TurtleUtilSavedata.json")) then
+		fs.close
 		fs.delete("/Seanware/Savedata/TurtleUtilSavedata.json")
 	end
 end
@@ -59,6 +60,25 @@ local function SaveTurtleUtilData()
 	encodedJson = json.encode(saveData)
 	saveFile.write(encodedJson) --writes all the stuff in handle to the file defined in 'saveTo'
 	saveFile.close()
+end
+
+local function LoadTurtleUtilData()
+	-- Also make the Movement Util load
+
+	local saveFile = fs.open("/Seanware/Savedata/TurtleUtilSavedata.json", "r")
+	local encodedDat = saveFile.readAll()
+	saveData = json.decode(encodedDat)
+	saveFile.close()
+
+	localPos = vector.new(saveData["localPosX"], saveData["localPosY"], saveData["localPosZ"])
+	currentFacingDir = saveData["currentDir"]
+	currentlyGoingTo = saveData["currentlyGoingTo"]
+	goingToPos = vector.new(saveData["goingToPosX"], saveData["goingToPosY"], saveData["goingToPosZ"])
+
+	print("X: " .. localPos.x)
+	print("Y: " .. localPos.y)
+	print("Z: " .. localPos.z)
+	print("Facing Dir: " .. currentFacingDir)	
 end
 
 local function GetLocalPositionData()
@@ -273,28 +293,6 @@ local function GoToPosition(targetPos)
 	end	
 
 	SaveTurtleUtilData()
-end
-
-local function LoadTurtleUtilData()
-	-- Also make the Movement Util load
-
-	local saveFile = fs.open("/Seanware/Savedata/TurtleUtilSavedata.json", "r")
-	local encodedDat = saveFile.readAll()
-	saveData = json.decode(encodedDat)
-
-	localPos = vector.new(saveData["localPosX"], saveData["localPosY"], saveData["localPosZ"])
-	currentFacingDir = saveData["currentDir"]
-	currentlyGoingTo = saveData["currentlyGoingTo"]
-	goingToPos = vector.new(saveData["goingToPosX"], saveData["goingToPosY"], saveData["goingToPosZ"])
-
-	print("X: " .. localPos.x)
-	print("Y: " .. localPos.y)
-	print("Z: " .. localPos.z)
-	print("Facing Dir: " .. currentFacingDir)
-
-	if(currentlyGoingTo == true) then
-		GoToPosition(goingToPos)
-	end
 end
 
 --When this file is 'required' it returns the functions below

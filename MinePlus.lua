@@ -70,6 +70,7 @@ local function LoadMinePlusData()
 	local saveFile = fs.open("/Seanware/Savedata/MinePlusSaveData.json", "r")
 	local encodedDat = saveFile.readAll()
 	saveData = json.decode(encodedDat)
+	saveFile.close()
 
 	mineLayerLength = saveData["mineLayerLength"]
 	mineLayerWidth = saveData["mineLayerWidth"]
