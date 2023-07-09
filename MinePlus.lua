@@ -212,6 +212,7 @@ local function FindBottom()
 	end
 
 	while(turtlePos.y == 0 and turtlePos.x == 1 and math.fmod(turtlePos.z, 6) ~= 0) do
+		currentDirection, turtlePos = turtleUtil.getLocalData()
 		turtleUtil.moveUp()
 	end	
 
