@@ -95,7 +95,6 @@ InstallFromGit("SeanwareInstaller", "SeanwareInstaller")
 term.setTextColor(colors.green)
 print("Installing Dependencies ... ")
 InstallFromGit("json", "json")
-InstallFromGit("ClearSavedata", "ClearSavedata")
 InstallFromGit("TurtleMovementUtil", "TurtleMovementUtil")
 
 -- Any additional stuff
