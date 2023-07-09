@@ -71,25 +71,9 @@ local function InstallAdditionalModules()
 end
 
 local function PrintLogoFluff()
-term.setTextColor(colors.orange)
-	print("      ::::::::  ::::::::::     :::     ::::    ::: :::       :::     :::     :::::::::  :::::::::: ")
-	print("    :+:    :+: :+:          :+: :+:   :+:+:   :+: :+:       :+:   :+: :+:   :+:    :+: :+:         ")
-	print("   +:+        +:+         +:+   +:+  :+:+:+  +:+ +:+       +:+  +:+   +:+  +:+    +:+ +:+          ")
-
-	term.setTextColor(colors.yellow)
-	print("  +#++:++#++ +#++:++#   +#++:++#++: +#+ +:+ +#+ +#+  +:+  +#+ +#++:++#++: +#++:++#:  +#++:++#      ")
-	print("        +#+ +#+        +#+     +#+ +#+  +#+#+# +#+ +#+#+ +#+ +#+     +#+ +#+    +#+ +#+            ")
-	print("#+#    #+# #+#        #+#     #+# #+#   #+#+#  #+#+# #+#+#  #+#     #+# #+#    #+# #+#             ")
-	print("########  ########## ###     ### ###    ####   ###   ###   ###     ### ###    ### ##########       ")
-	term.setTextColor(colors.white)
 end
 
 
---Put all our things here we for sure want installed.
--- Just the filenames.
---Check for updates to the installer.
-PrintLogoFluff()
-sleep(2)
 InstallFromGit("SeanwareInstaller", "SeanwareInstaller")
 
 term.setTextColor(colors.green)
