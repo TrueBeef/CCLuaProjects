@@ -34,7 +34,8 @@ end
 
 local function ClearSaveData()
 	if(fs.exists("/Seanware/Savedata/TurtleUtilSavedata.json")) then
-		fs.close
+		local saveFile = fs.open("/Seanware/Savedata/TurtleUtilSavedata.json", "r")	
+		saveFile.close()
 		fs.delete("/Seanware/Savedata/TurtleUtilSavedata.json")
 	end
 end
