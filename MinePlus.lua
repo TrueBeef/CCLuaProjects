@@ -75,13 +75,13 @@ local function LoadMinePlusData()
 	mineLayerLength = saveData["mineLayerLength"]
 	mineLayerWidth = saveData["mineLayerWidth"]
 	mineLayerDepth = saveData["mineLayerDepth"]
-	currentlyFullInventory = saveData["currentlyFullInventory"]
-	currentlyLowFuel = saveData["currentlyLowFuel"]
 	currentlyDoneMining = saveData["currentlyDoneMining"]
 	mineVerticallyRequest = saveData["mineVerticallyRequest"]
 	miningVertically = saveData["miningVertically"]
-	lastPos = vector.new(saveData["lastPosX"], saveData["lastPosY"], saveData["lastPosZ"])
 	returnHome = saveData["returnHome"]
+	lastPos = vector.new(saveData["lastPosX"], saveData["lastPosY"], saveData["lastPosZ"])
+	currentlyFullInventory = saveData["currentlyFullInventory"]
+	currentlyLowFuel = saveData["currentlyLowFuel"]
 
 	local currentDirection, turtlePos = turtleUtil.getLocalData()	
 
