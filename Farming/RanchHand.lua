@@ -162,11 +162,7 @@ local function HarvestActions()
 		turtle.select(1)
 	else
 		turtle.select(2)
-	end
-
-	if(turtle.compareDown() == false) then
-		turtle.digDown()
-	end
+	end	
 
 	if(turtle.detectDown() == false) then
 		turtle.digDown()
