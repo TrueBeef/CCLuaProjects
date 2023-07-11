@@ -15,7 +15,7 @@ currentlyLowFuel = false -- Were we going home to refuel?
 currentlyFullInventory = false -- Were we going home for a full inventory?
 lastPos = vector.new(0, 0, 0)
 
-local SaveHarvestData()
+local function SaveHarvestData()
 	turtleUtil.saveTurtleUtilData()
 	-- Also make the Movement Util save
 	fs.makeDir("/Seanware/Savedata")
@@ -38,7 +38,7 @@ local SaveHarvestData()
 	saveFile.close()
 end
 
-local LoadHarvestData()
+local function LoadHarvestData()
 	turtleUtil.loadTurtleUtilData()
 
 	local saveFile = fs.open("/Seanware/Savedata/RanchHandSaveData.json", "r")
@@ -58,7 +58,7 @@ local LoadHarvestData()
 	print("Resuming from loaded save!")
 end
 
-local DepositResources()
+local function DepositResources()
 	turtleUtil.goToPos(vector.new(-1, 0, 0))
 	
 	for i=3,16 do
@@ -143,7 +143,7 @@ local function CheckResources()
 	end
 end
 
-local HarvestActions()
+local function HarvestActions()
 	turtle.select(1)
 	turtle.suckDown()
 	turtle.placeDown()
@@ -153,7 +153,7 @@ local HarvestActions()
 	SaveHarvestData()
 end
 
-local CleanupActions()
+local function CleanupActions()
 	turtle.suckDown()
 	turtle.suckDown()
 	turtle.suckDown()
@@ -162,7 +162,7 @@ local CleanupActions()
 	SaveHarvestData()
 end
 
-local BeginHarvest()		
+local function BeginHarvest()		
 	while(true) do
 		
 		local endHarvestPass = false
@@ -205,7 +205,7 @@ local BeginHarvest()
 	end
 end
 
-local InitializeFarmer()
+local function InitializeFarmer()
 	fs.exists("/Seanware/Savedata/RanchHandSaveData.json") then
 		LoadHarvestData()
 	else
