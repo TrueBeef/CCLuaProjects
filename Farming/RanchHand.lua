@@ -12,6 +12,7 @@ farmPlotLength = 0
 farmPlotWidth = 0
 
 currentlyInReverse = false
+currentlyWaiting = false
 currentlyLowFuel = false -- Were we going home to refuel?
 currentlyFullInventory = false -- Were we going home for a full inventory?
 lastPos = vector.new(0, 0, 0)
@@ -29,6 +30,7 @@ local function SaveHarvestData()
 		currentlyFullInventory = currentlyFullInventory,
 		currentlyLowFuel = currentlyLowFuel,
 		currentlyInReverse = currentlyInReverse,
+		currentlyWaiting = currentlyWaiting,
 		farmPlotLength = farmPlotLength,
 		farmPlotWidth = farmPlotWidth,
 		minutesToWait = minutesToWait,			
@@ -51,7 +53,8 @@ local function LoadHarvestData()
 	lastPos = vector.new(saveData["lastPosX"], saveData["lastPosY"], saveData["lastPosZ"])
 	currentlyFullInventory = saveData["currentlyFullInventory"]
 	currentlyLowFuel = saveData["currentlyLowFuel"]
-
+	
+	currentlyWaiting = saveData["currentlyWaiting"]
 	currentlyInReverse = saveData["currentlyInReverse"]
 	minutesToWait = saveData["minutesToWait"]	
 	secondsRemaining = saveData["secondsRemaining"]
@@ -94,9 +97,12 @@ local function Return_FullInventory()
 		sleep(5)
 		totalItems, slotsWithItems = turtleUtil.checkInventory()
 	end		
+
+	local currentDir, turtlePos = turtleUtil.getLocalData()
 	
 	currentlyFullInventory = false
 	SaveHarvestData()
+	turtleUtil.goToPos(vector.new(lastPos.x, turtlePos.y, 0))
 	turtleUtil.goToPos(lastPos)
 end
 
@@ -122,10 +128,13 @@ local function Return_OutOfFuel()
 		turtle.select(1)
 	end	
 
+	local currentDir, turtlePos = turtleUtil.getLocalData()
+
 	-- We're good to go.
 	turtleUtil.moveBackward()
 	currentlyLowFuel = false
 	SaveHarvestData()
+	turtleUtil.goToPos(vector.new(lastPos.x, turtlePos.y, 0))	
 	turtleUtil.goToPos(lastPos)
 end
 
@@ -183,48 +192,59 @@ end
 local function BeginHarvest()	
 	
 	while(true) do
-		
-		local endHarvestPass = false
-		local endCleanupPass = false
+		if(currentlyWaiting == false) then 
+			local endHarvestPass = false
+			local endCleanupPass = false
 
-		while(endHarvestPass == false) do
-			currentlyInReverse = false
-			HarvestActions()
-			turtleUtil.moveInGrid(farmPlotWidth, farmPlotLength, false)
-			HarvestActions()
-			endHarvestPass = turtleUtil.checkEndGrid(farmPlotWidth, farmPlotLength, false)
-		end
+			while(endHarvestPass == false and currentlyInReverse == false) do								
+				HarvestActions()	
+				turtleUtil.moveInGrid(farmPlotWidth, farmPlotLength, false)
+				HarvestActions()
+				endHarvestPass = turtleUtil.checkEndGrid(farmPlotWidth, farmPlotLength, false)
+				SaveHarvestData()
+			end
 
-		while(endCleanupPass == false) do
 			currentlyInReverse = true
-			CleanupActions()	
-			turtleUtil.moveInGrid(farmPlotWidth, farmPlotLength, true)
-			CleanupActions()
-			endCleanupPass = turtleUtil.checkEndGrid(farmPlotWidth, farmPlotLength, true)
-		end
+			while(endCleanupPass == false and currentlyInReverse == true) do
+				endHarvestPass = true								
+				CleanupActions()
+				turtleUtil.moveInGrid(farmPlotWidth, farmPlotLength, true)
+				CleanupActions()
+				endCleanupPass = turtleUtil.checkEndGrid(farmPlotWidth, farmPlotLength, true)
+				SaveHarvestData()
+			end
 
-		--Go Deposit our stuff.
-		-- We should check if our inventory gets full while cleaning also
-		DepositResources()
+			currentlyInReverse = false
+			SaveHarvestData()
 
-		while(secondsRemaining ~= 0) do
-			sleep(1)
-			secondsRemaining = secondsRemaining - 1	
+			--Go Deposit our stuff.
+			-- We should check if our inventory gets full while cleaning also
+			DepositResources()
+			currentlyWaiting = true
+		else
+			while(secondsRemaining ~= 0) do
+				sleep(1)
+				secondsRemaining = secondsRemaining - 1	
+				term.clear()
+				term.setTextColor(colors.green)
+				term.setCursorPos(1, 1)
+				term.write("Time Until next harvest: ")
+				term.setTextColor(colors.lime)
+				term.setCursorPos(1, 2)
+				term.write(tostring(math.floor(secondsRemaining / 60)) .. " Minutes and " .. tostring(math.fmod(secondsRemaining, 60)) .. " Seconds.")
+				SaveHarvestData()
+			end	
+
+			currentlyWaiting = false
 			term.clear()
 			term.setTextColor(colors.green)
 			term.setCursorPos(1, 1)
-			term.write("Time Until next harvest: ")
-			term.setTextColor(colors.lime)
-			term.setCursorPos(1, 2)
-			term.write(tostring(math.floor(secondsRemaining / 60)) .. " Minutes and " .. tostring(math.fmod(secondsRemaining, 60)) .. " Seconds.")
+			term.write("Beginning Harvest!")
 			SaveHarvestData()
-		end
-
-		term.clear()
-		term.setTextColor(colors.green)
-		term.setCursorPos(1, 1)
-		term.write("Beginning Harvest!")
-		secondsRemaining = (tonumber(minutesToWait) * 60)
+			turtleUtil.goToPos(vector.new(0, 0, 0))
+			secondsRemaining = (tonumber(minutesToWait) * 60)			
+			SaveHarvestData()
+		end		
 	end
 end
 
@@ -272,8 +292,7 @@ local function InitializeFarmer()
 
 		term.clear()
 		term.setCursorPos(1,1)
-		print("Beginning Harvest")
-		turtleUtil.moveForward()
+		print("Beginning Harvest")		
 		BeginHarvest()
 	end
 end
