@@ -1,11 +1,28 @@
 -- Shortened Raw Link: https://tinyurl.com/SeanWareInstaller
 -- wget run https://tinyurl.com/SeanWareInstaller
 
+--[[
+ ________  _______   ________  ________   ___       __   ________  ________  _______      
+|\   ____\|\  ___ \ |\   __  \|\   ___  \|\  \     |\  \|\   __  \|\   __  \|\  ___ \     
+\ \  \___|\ \   __/|\ \  \|\  \ \  \\ \  \ \  \    \ \  \ \  \|\  \ \  \|\  \ \   __/|    
+ \ \_____  \ \  \_|/_\ \   __  \ \  \\ \  \ \  \  __\ \  \ \   __  \ \   _  _\ \  \_|/__  
+  \|____|\  \ \  \_|\ \ \  \ \  \ \  \\ \  \ \  \|\__\_\  \ \  \ \  \ \  \\  \\ \  \_|\ \ 
+    ____\_\  \ \_______\ \__\ \__\ \__\\ \__\ \____________\ \__\ \__\ \__\\ _\\ \_______\
+   |\_________\|_______|\|__|\|__|\|__| \|__|\|____________|\|__|\|__|\|__|\|__|\|_______|
+   \|_________|                                                                           
+                                                                                                                                                                
+--]]
+-- Copyright Seanware(tm)
+
 term.clear()
 term.setCursorPos(1, 1)
-term.setTextColor(colors.orange)
+term.setTextColor(colors.orange)       
+
+print(" _____                               "
+print("|   __|___ ___ ___ _ _ _ ___ ___ ___ "
+print("|__   | -_| .'|   | | | | .'|  _| -_|"
+print("|_____|___|__,|_|_|_____|__,|_| |___|"
 print("")
-print("~ SEANWARE Installer ~")
 print("Checking for updates.. ")
 
 fs.makeDir("/Seanware/Savedata")
@@ -68,9 +85,6 @@ local function InstallAdditionalModules()
 	term.clear()
 	term.setTextColor(colors.green)
 	print("Done Installing Modules.")
-end
-
-local function PrintLogoFluff()
 end
 
 
