@@ -14,7 +14,7 @@ miningQuadrant = { Left = 0, Right = 1}
 mineLayerWidth = 0
 mineLayerLength = 0
 
-localPos = nil
+localPos = vector.new(0, 0, 0)
 
 lastTurnDir = turnDirection.None
 currentFacingDir = facingDirection.North
@@ -304,26 +304,16 @@ local function GoToPosition(targetPos)
 	SaveTurtleUtilData()
 end
 
-local function MoveInGrid(gridMaxWidth, gridMaxLength, inReverse)
+local function MoveInGrid(maxWidth, maxLength, inReverse)
+
+	gridMaxWidth = tonumber(maxWidth)	
+	gridMaxLength = tonumber(maxLength)
 	
 	-- Every other column we swap which direction we're going. Thus the modulo.
 	-- Y Starts at zero.
 	if(math.fmod(localPos.y, 2) == 0) then
 		
 		if(inReverse == false) then
-
-			if(localPos.x == 1) then				
-				targetPos = vector.new(localPos.x + 1, localPos.y, localPos.z)
-				GoToPosition(targetPos) 
-				
-
-			elseif(localPos.x < gridMaxLength) then
-
-				local targetPos = vector.new(localPos.x + 1, localPos.y, localPos.z)
-				GoToPosition(targetPos) 
-				
-			end		
-
 			--Layer one
 			if(localPos.x == gridMaxLength) then -- Are we as far forward as we can get?
 				if(localPos.y < gridMaxWidth) then -- Are we still not at the max width?
@@ -333,7 +323,22 @@ local function MoveInGrid(gridMaxWidth, gridMaxLength, inReverse)
 				end
 			end
 
+			if(localPos.x == 1) then				
+				targetPos = vector.new(localPos.x + 1, localPos.y, localPos.z)
+				GoToPosition(targetPos)
+			elseif(localPos.x < gridMaxLength) then
+				local targetPos = vector.new(localPos.x + 1, localPos.y, localPos.z)
+				GoToPosition(targetPos)				
+			end		
+
 		else
+			--Layer two
+			if(localPos.x == 1) then
+				if(localPos.y > 0) then
+					targetPos = vector.new(localPos.x, localPos.y - 1, localPos.z)
+					GoToPosition(targetPos) 
+				end
+			end
 
 			if(localPos.x == gridMaxLength) then
 				
@@ -345,17 +350,17 @@ local function MoveInGrid(gridMaxWidth, gridMaxLength, inReverse)
 				GoToPosition(targetPos)				
 			end
 
-			--Layer two
-			if(localPos.x == 1) then
-				if(localPos.y > 0) then
-					targetPos = vector.new(localPos.x, localPos.y - 1, localPos.z)
-					GoToPosition(targetPos) 
-				end
-			end
 		end
 
 	else -- If we are on an alternate column (Width)
 		if(inReverse == false) then			
+			--Layer one
+			if(localPos.x == 1) then -- Are we as far forward as we can get?
+				if(localPos.y < gridMaxWidth) then -- Are we still not at the max width?
+					targetPos = vector.new(localPos.x, localPos.y + 1, localPos.z) -- Go to next column
+					GoToPosition(targetPos)
+				end
+			end
 
 			if(localPos.x == gridMaxLength) then				
 				targetPos = vector.new(localPos.x - 1, localPos.y, localPos.z)
@@ -366,26 +371,7 @@ local function MoveInGrid(gridMaxWidth, gridMaxLength, inReverse)
 				GoToPosition(targetPos)
 			end
 		
-			--Layer one
-			if(localPos.x == 1) then -- Are we as far forward as we can get?
-				if(localPos.y < gridMaxWidth) then -- Are we still not at the max width?
-					targetPos = vector.new(localPos.x, localPos.y + 1, localPos.z) -- Go to next column
-					GoToPosition(targetPos)
-				end
-			end
 		else
-			if(localPos.x == 1) then
-				targetPos = vector.new(localPos.x + 1, localPos.y, localPos.z)
-				GoToPosition(targetPos) 
-				
-				
-			elseif(localPos.x < gridMaxLength) then
-				local targetPos = vector.new(localPos.x + 1, localPos.y, localPos.z)
-				GoToPosition(targetPos) 
-				
-				
-			end	
-
 			--Layer two
 			if(localPos.x == gridMaxLength) then
 				if(localPos.y > 0) then
@@ -393,29 +379,40 @@ local function MoveInGrid(gridMaxWidth, gridMaxLength, inReverse)
 					GoToPosition(targetPos) 					
 				end
 			end
+
+			if(localPos.x == 1) then
+				targetPos = vector.new(localPos.x + 1, localPos.y, localPos.z)
+				GoToPosition(targetPos)
+			elseif(localPos.x < gridMaxLength) then
+				local targetPos = vector.new(localPos.x + 1, localPos.y, localPos.z)
+				GoToPosition(targetPos) 				
+			end	
 		end
 	end
 end
 
-local function CheckIfEndOfGrid(layMaxW, layMaxL, isReversed)
-	local currentDirection, turtlePos = turtleUtil.getLocalData()
+local function CheckIfEndOfGrid(maxW, maxL, isReversed)	
+	layMaxW = tonumber(maxW)
+	layMaxL = tonumber(maxL)
+
 	if(isReversed == false) then
-		if(turtlePos.y == layMaxW) then
+		if(localPos.y == layMaxW) then
 			-- Are we supposed to be at the top or bottom?
-			if(math.fmod(layMaxW, 2) == 0 and turtlePos.x == layMaxL) then
+			if(math.fmod(layMaxW, 2) == 0 and localPos.x == layMaxL) then
 				--We are at the correct point. Dig down and start a new layer.
 				return true
-			elseif(math.fmod(layMaxW, 2) ~= 0 and turtlePos.x == 1) then
+			elseif(math.fmod(layMaxW, 2) ~= 0 and localPos.x == 1) then
 				--We are at the correct point. Dig down and start a new layer.	
 				return true
 			end
 		end	
 	else	
 		-- We know we started here going forward so the 'End point' is right where we started; y0 x1.
-		if(turtlePos.y == 0 and turtlePos.x == 1) then
+		if(localPos.y == 0 and localPos.x == 1) then
 			return true
 		end
 	end
+
 	return false
 end
 

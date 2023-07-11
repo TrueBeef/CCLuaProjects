@@ -11,6 +11,7 @@ secondsRemaining = 0
 farmPlotLength = 0
 farmPlotWidth = 0
 
+currentlyInReverse = false
 currentlyLowFuel = false -- Were we going home to refuel?
 currentlyFullInventory = false -- Were we going home for a full inventory?
 lastPos = vector.new(0, 0, 0)
@@ -27,6 +28,7 @@ local function SaveHarvestData()
 		lastPosZ = lastPos.z,
 		currentlyFullInventory = currentlyFullInventory,
 		currentlyLowFuel = currentlyLowFuel,
+		currentlyInReverse = currentlyInReverse,
 		farmPlotLength = farmPlotLength,
 		farmPlotWidth = farmPlotWidth,
 		minutesToWait = minutesToWait,			
@@ -50,6 +52,7 @@ local function LoadHarvestData()
 	currentlyFullInventory = saveData["currentlyFullInventory"]
 	currentlyLowFuel = saveData["currentlyLowFuel"]
 
+	currentlyInReverse = saveData["currentlyInReverse"]
 	minutesToWait = saveData["minutesToWait"]	
 	secondsRemaining = saveData["secondsRemaining"]
 	farmPlotLength = saveData["farmPlotLength"]
@@ -59,6 +62,8 @@ local function LoadHarvestData()
 end
 
 local function DepositResources()
+	local currentDir, turtlePos = turtleUtil.getLocalData()
+	turtleUtil.goToPos(vector.new(turtlePos.x, 0, 0))
 	turtleUtil.goToPos(vector.new(-1, 0, 0))
 	
 	for i=3,16 do
@@ -144,7 +149,20 @@ local function CheckResources()
 end
 
 local function HarvestActions()
-	turtle.select(1)
+	if(turtle.getItemCount(1) == 0) then
+		turtle.select(1)
+	else
+		turtle.select(2)
+	end
+
+	if(turtle.compareDown() == false) then
+		turtle.digDown()
+	end
+
+	if(turtle.detectDown() == false) then
+		turtle.digDown()
+	end
+
 	turtle.suckDown()
 	turtle.placeDown()
 	turtle.suckDown()
@@ -162,23 +180,25 @@ local function CleanupActions()
 	SaveHarvestData()
 end
 
-local function BeginHarvest()		
+local function BeginHarvest()	
+	
 	while(true) do
 		
 		local endHarvestPass = false
 		local endCleanupPass = false
 
-		-- Go forwards one.
-		turtleUtil.goToPos(vector.new(1, 0, 0))
-
 		while(endHarvestPass == false) do
-			turtleUtil.moveInGrid(farmPlotWidth, farmPlotLength, HarvestActions(), false)
+			currentlyInReverse = false
+			HarvestActions()
+			turtleUtil.moveInGrid(farmPlotWidth, farmPlotLength, false)
 			HarvestActions()
 			endHarvestPass = turtleUtil.checkEndGrid(farmPlotWidth, farmPlotLength, false)
 		end
 
 		while(endCleanupPass == false) do
-			turtleUtil.moveInGrid(farmPlotWidth, farmPlotLength, CleanupActions(), true)
+			currentlyInReverse = true
+			CleanupActions()	
+			turtleUtil.moveInGrid(farmPlotWidth, farmPlotLength, true)
 			CleanupActions()
 			endCleanupPass = turtleUtil.checkEndGrid(farmPlotWidth, farmPlotLength, true)
 		end
@@ -196,7 +216,7 @@ local function BeginHarvest()
 			term.write("Time Until next harvest: ")
 			term.setTextColor(colors.lime)
 			term.setCursorPos(1, 2)
-			term.write(tostring(math.floor(secondsRemaining / 60)) .. " Minutes and " .. tostring(math.fmod(secondsRemaining)) .. " Seconds.")
+			term.write(tostring(math.floor(secondsRemaining / 60)) .. " Minutes and " .. tostring(math.fmod(secondsRemaining, 60)) .. " Seconds.")
 			SaveHarvestData()
 		end
 
@@ -204,29 +224,56 @@ local function BeginHarvest()
 		term.setTextColor(colors.green)
 		term.setCursorPos(1, 1)
 		term.write("Beginning Harvest!")
+		secondsRemaining = (tonumber(minutesToWait) * 60)
 	end
+end
+
+local function BeginLoad()
+	LoadHarvestData()
+
+	local currentDirection, turtlePos = turtleUtil.getLocalData()	
+
+	if(currentlyLowFuel) then
+		-- We were returning for fuel when we saved.
+		Return_OutOfFuel()
+	elseif(currentlyFullInventory) then
+		-- We were returning for a full inventory when we saved.
+		Return_FullInventory()
+	end
+
+	if(currentlyInReverse == false) then
+		HarvestActions()
+	else
+		CleanupActions()
+	end
+
+	BeginHarvest()
+
 end
 
 local function InitializeFarmer()
 	if(fs.exists("/Seanware/Savedata/RanchHandSaveData.json")) then
-		LoadHarvestData()
+		BeginLoad()
 	else
+		term.clear()
+		term.setCursorPos(1, 1)
 		print("Before We start...")
-		print("Please place seeds in slot 1.")
+		print("Please place seeds in slot 1 & 2.")
 		print("...")
 		print("How Long is the plot?")
-		farmPlotLength = read()
+		farmPlotLength = tonumber(read())
 
 		print("How Wide is the plot?")
-		farmPlotWidth = read()
+		farmPlotWidth = tonumber(read() - 1)
 
 		print("How many minutes to wait before harvest?")
-		minutesToWait = read()
+		minutesToWait = tonumber(read())
 		secondsRemaining = (minutesToWait * 60)
 
 		term.clear()
 		term.setCursorPos(1,1)
 		print("Beginning Harvest")
+		turtleUtil.moveForward()
 		BeginHarvest()
 	end
 end
