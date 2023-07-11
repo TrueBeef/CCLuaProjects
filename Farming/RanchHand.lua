@@ -173,11 +173,13 @@ local function BeginHarvest()
 
 		while(endHarvestPass == false) do
 			turtleUtil.moveInGrid(farmPlotWidth, farmPlotLength, HarvestActions(), false)
+			HarvestActions()
 			endHarvestPass = turtleUtil.checkEndGrid(farmPlotWidth, farmPlotLength, false)
 		end
 
 		while(endCleanupPass == false) do
 			turtleUtil.moveInGrid(farmPlotWidth, farmPlotLength, CleanupActions(), true)
+			CleanupActions()
 			endCleanupPass = turtleUtil.checkEndGrid(farmPlotWidth, farmPlotLength, true)
 		end
 
@@ -206,7 +208,7 @@ local function BeginHarvest()
 end
 
 local function InitializeFarmer()
-	fs.exists("/Seanware/Savedata/RanchHandSaveData.json") then
+	if(fs.exists("/Seanware/Savedata/RanchHandSaveData.json")) then
 		LoadHarvestData()
 	else
 		print("Before We start...")
@@ -222,9 +224,10 @@ local function InitializeFarmer()
 		minutesToWait = read()
 		secondsRemaining = (minutesToWait * 60)
 
-		clear()
+		term.clear()
 		term.setCursorPos(1,1)
-		Print("Beginning Harvest")
+		print("Beginning Harvest")
+		BeginHarvest()
 	end
 end
 

@@ -251,7 +251,7 @@ local function FaceDirection(targDirection)
 	end	
 end
 
-local function GoToPosition(targetPos) if(someFunction() ~= nill) then someFunction() end
+local function GoToPosition(targetPos) 
 	-- Travel Up or down
 	if(targetPos.z > localPos.z) then		
 		while(localPos.z ~= targetPos.z) do
@@ -304,7 +304,7 @@ local function GoToPosition(targetPos) if(someFunction() ~= nill) then someFunct
 	SaveTurtleUtilData()
 end
 
-local function MoveInGrid(gridMaxWidth, gridMaxLength, someFunction, inReverse)
+local function MoveInGrid(gridMaxWidth, gridMaxLength, inReverse)
 	
 	-- Every other column we swap which direction we're going. Thus the modulo.
 	-- Y Starts at zero.
@@ -315,13 +315,13 @@ local function MoveInGrid(gridMaxWidth, gridMaxLength, someFunction, inReverse)
 			if(localPos.x == 1) then				
 				targetPos = vector.new(localPos.x + 1, localPos.y, localPos.z)
 				GoToPosition(targetPos) 
-				if(someFunction() ~= nill) then someFunction() end
-
+				
 
 			elseif(localPos.x < gridMaxLength) then
+
 				local targetPos = vector.new(localPos.x + 1, localPos.y, localPos.z)
 				GoToPosition(targetPos) 
-				if(someFunction() ~= nill) then someFunction() end
+				
 			end		
 
 			--Layer one
@@ -329,7 +329,7 @@ local function MoveInGrid(gridMaxWidth, gridMaxLength, someFunction, inReverse)
 				if(localPos.y < gridMaxWidth) then -- Are we still not at the max width?
 					targetPos = vector.new(localPos.x, localPos.y + 1, localPos.z) -- Go to next column
 					GoToPosition(targetPos) 
-					if(someFunction() ~= nill) then someFunction() end
+					
 				end
 			end
 
@@ -338,19 +338,11 @@ local function MoveInGrid(gridMaxWidth, gridMaxLength, someFunction, inReverse)
 			if(localPos.x == gridMaxLength) then
 				
 				targetPos = vector.new(localPos.x - 1, localPos.y, localPos.z)
-				GoToPosition(targetPos) 
-				
-				if(someFunction() ~= nill) then 
-					someFunction() 
-				end
+				GoToPosition(targetPos)
 
 			elseif(localPos.x > 1) then
 				local targetPos = vector.new(localPos.x - 1, localPos.y, localPos.z)
-				GoToPosition(targetPos) 
-				
-				if(someFunction() ~= nill) then 
-					someFunction() 
-				end
+				GoToPosition(targetPos)				
 			end
 
 			--Layer two
@@ -358,10 +350,6 @@ local function MoveInGrid(gridMaxWidth, gridMaxLength, someFunction, inReverse)
 				if(localPos.y > 0) then
 					targetPos = vector.new(localPos.x, localPos.y - 1, localPos.z)
 					GoToPosition(targetPos) 
-
-					if(someFunction() ~= nill) then 
-						someFunction() 
-					end
 				end
 			end
 		end
@@ -371,51 +359,43 @@ local function MoveInGrid(gridMaxWidth, gridMaxLength, someFunction, inReverse)
 
 			if(localPos.x == gridMaxLength) then				
 				targetPos = vector.new(localPos.x - 1, localPos.y, localPos.z)
-				GoToPosition(targetPos) 
+				GoToPosition(targetPos) 				
 				
-				if(someFunction() ~= nill) then someFunction() end
 			elseif(localPos.x > 1) then
 				local targetPos = vector.new(localPos.x - 1, localPos.y, localPos.z)
-				GoToPosition(targetPos) 
-				
-				if(someFunction() ~= nill) then someFunction() end
+				GoToPosition(targetPos)
 			end
 		
 			--Layer one
 			if(localPos.x == 1) then -- Are we as far forward as we can get?
 				if(localPos.y < gridMaxWidth) then -- Are we still not at the max width?
 					targetPos = vector.new(localPos.x, localPos.y + 1, localPos.z) -- Go to next column
-					GoToPosition(targetPos) 
-					
-					if(someFunction() ~= nill) then someFunction() end
+					GoToPosition(targetPos)
 				end
-			end			
-
+			end
 		else
-
 			if(localPos.x == 1) then
 				targetPos = vector.new(localPos.x + 1, localPos.y, localPos.z)
 				GoToPosition(targetPos) 
 				
-				if(someFunction() ~= nill) then someFunction() end
+				
 			elseif(localPos.x < gridMaxLength) then
 				local targetPos = vector.new(localPos.x + 1, localPos.y, localPos.z)
 				GoToPosition(targetPos) 
 				
-				if(someFunction() ~= nill) then someFunction() end
+				
 			end	
 
 			--Layer two
 			if(localPos.x == gridMaxLength) then
 				if(localPos.y > 0) then
 					targetPos = vector.new(localPos.x, localPos.y - 1, localPos.z)
-					GoToPosition(targetPos) 
-					
-					if(someFunction() ~= nill) then someFunction() end
+					GoToPosition(targetPos) 					
 				end
 			end
 		end
 	end
+end
 
 local function CheckIfEndOfGrid(layMaxW, layMaxL, isReversed)
 	local currentDirection, turtlePos = turtleUtil.getLocalData()
