@@ -71,10 +71,20 @@ local function InstallAdditionalModules()
 
 			term.clear()
 			term.setCursorPos(1,1)
+			term.setTextColor(colors.orange)
+
+			print(" _____                               ")
+			print("|   __|___ ___ ___ _ _ _ ___ ___ ___ ")
+			print("|__   | -_| .'|   | | | | .'|  _| -_|")
+			print("|_____|___|__,|_|_|_____|__,|_| |___|")
+			print("")
+
+			term.setTextColor(colors.white)
+			term.setCursorPos(1,6)
 			term.write("Selected Filename: " .. repoFile)
-			term.setCursorPos(1,2)
+			term.setCursorPos(1,7)
 			term.write("Save as + in directory: ")
-			term.setCursorPos(1,3)
+			term.setCursorPos(1,8)
 			local saveAs = read()
 
 			InstallFromGit(repoFile, saveAs)
