@@ -159,9 +159,9 @@ end
 
 local function HarvestActions()
 	if(turtle.getItemCount(1) == 0) then
-		turtle.select(1)
-	else
 		turtle.select(2)
+	else
+		turtle.select(1)
 	end	
 
 	if(turtle.detectDown() == false) then
