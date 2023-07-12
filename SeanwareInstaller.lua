@@ -18,10 +18,10 @@ term.clear()
 term.setCursorPos(1, 1)
 term.setTextColor(colors.orange)       
 
-print(" _____                               "
-print("|   __|___ ___ ___ _ _ _ ___ ___ ___ "
-print("|__   | -_| .'|   | | | | .'|  _| -_|"
-print("|_____|___|__,|_|_|_____|__,|_| |___|"
+print(" _____                               ")
+print("|   __|___ ___ ___ _ _ _ ___ ___ ___ ")
+print("|__   | -_| .'|   | | | | .'|  _| -_|")
+print("|_____|___|__,|_|_|_____|__,|_| |___|")
 print("")
 print("Checking for updates.. ")
 
@@ -56,10 +56,11 @@ local function InstallAdditionalModules()
 			term.clear()
 			term.setCursorPos(1,1)
 			term.setTextColor(colors.orange)
-			print(" _____                               "
-			print("|   __|___ ___ ___ _ _ _ ___ ___ ___ "
-			print("|__   | -_| .'|   | | | | .'|  _| -_|"
-			print("|_____|___|__,|_|_|_____|__,|_| |___|"
+
+			print(" _____                               ")
+			print("|   __|___ ___ ___ _ _ _ ___ ___ ___ ")
+			print("|__   | -_| .'|   | | | | .'|  _| -_|")
+			print("|_____|___|__,|_|_|_____|__,|_| |___|")
 			print("")
 
 			term.setTextColor(colors.white)
