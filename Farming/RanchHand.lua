@@ -270,10 +270,12 @@ local function BeginLoad()
 		Return_FullInventory()
 	end
 
-	if(currentlyInReverse == false) then
-		HarvestActions()
-	else
-		CleanupActions()
+	if(turtlePos ~= (vector.new(-1, 0, 0) or vector.new(0, 0, 0))) then
+		if(currentlyInReverse == false) then
+			HarvestActions()
+		else
+			CleanupActions()
+		end
 	end
 
 	BeginHarvest()
