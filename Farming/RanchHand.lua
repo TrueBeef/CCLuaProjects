@@ -304,7 +304,7 @@ local function InitializeFarmer()
 
 		term.clear()
 		term.setCursorPos(1, 1)
-		print("Start harvest now? (y/n)")
+		print("Wait for timer now? (y/n)")
 		harvestNow = read()
 
 		if(harvestNow == "y" or harvestNow == "Yes" or harvestNow == "Y") then
