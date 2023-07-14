@@ -158,18 +158,31 @@ local function CheckResources()
 end
 
 local function HarvestActions()
-	if(turtle.getItemCount(1) == 0) then
-		turtle.select(2)
+	currentItemSlot = 1
+	turtle.suckDown()
+	turtle.suck()
+	
+	if(turtle.getItemCount(1) <= 1) then
+		currentItemSlot = 2	
+		turtle.select(currentItemSlot)
 	else
-		turtle.select(1)
+		currentItemSlot = 1
+		turtle.select(currentItemSlot)
 	end	
 
+	if(turtle.getItemCount(currentItemSlot) > 1) then
+		turtle.placeDown()
+	else
+		if(turtle.detectDown() == true) then
+			turtle.placeDown()
+		end
+	end
+
+	-- Tills a block if nothing is here
 	if(turtle.detectDown() == false) then
 		turtle.digDown()
 	end
-
-	turtle.suckDown()
-	turtle.placeDown()
+	
 	turtle.suckDown()
 	turtle.suckDown()	
 	CheckResources()
@@ -178,9 +191,9 @@ end
 
 local function CleanupActions()
 	turtle.suckDown()
+	turtle.suck()
 	turtle.suckDown()
-	turtle.suckDown()
-	turtle.suckDown()
+	turtle.suck()
 	CheckResources()
 	SaveHarvestData()
 end
@@ -272,24 +285,41 @@ local function InitializeFarmer()
 		BeginLoad()
 	else
 		term.clear()
-		term.setCursorPos(1, 1)
-		print("Before We start...")
-		print("Please place seeds in slot 1 & 2.")
-		print("...")
+		term.setCursorPos(1, 1)		
+		print("Ensure to place stack of seeds in slot 1 & 2.")
+		print("...")		
 		print("How Long is the plot?")
 		farmPlotLength = tonumber(read())
 
+		term.clear()
+		term.setCursorPos(1, 1)
 		print("How Wide is the plot?")
 		farmPlotWidth = tonumber(read() - 1)
 
+		term.clear()
+		term.setCursorPos(1, 1)
 		print("How many minutes to wait before harvest?")
 		minutesToWait = tonumber(read())
 		secondsRemaining = (minutesToWait * 60)
 
 		term.clear()
-		term.setCursorPos(1,1)
-		print("Beginning Harvest")		
-		BeginHarvest()
+		term.setCursorPos(1, 1)
+		print("Start harvest now? (y/n)")
+		harvestNow = read()
+
+		if(harvestNow == "y" or harvestNow == "Yes" or harvestNow == "Y") then
+			term.clear()
+			term.setCursorPos(1,1)
+			print("Starting Timer")
+			currentlyWaiting = true
+			BeginHarvest()
+		else
+			term.clear()
+			term.setCursorPos(1,1)
+			print("Beginning Harvest")		
+			BeginHarvest()
+		end
+
 	end
 end
 
