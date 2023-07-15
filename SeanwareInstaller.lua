@@ -16,13 +16,21 @@
 
 term.clear()
 term.setCursorPos(1, 1)
-term.setTextColor(colors.orange)       
+term.setTextColor(colors.orange)      
 
-print(" _____                               ")
-print("|   __|___ ___ ___ _ _ _ ___ ___ ___ ")
-print("|__   | -_| .'|   | | | | .'|  _| -_|")
-print("|_____|___|__,|_|_|_____|__,|_| |___|")
-print("")
+local function PrintLogo(cursorPos)
+	term.setTextColor(colors.magenta)
+	print(" _____                               ")
+	print("|   __|___ ___ ___ _ _ _ ___ ___ ___ ")
+	term.setTextColor(colors.cyan)
+	print("|__   | -_| .'|   | | | | .'|  _| -_|")
+	print("|_____|___|__,|_|_|_____|__,|_| |___|")
+	print("")
+	return cursorPos + 5
+end
+
+
+PrintLogo()
 print("Checking for updates.. ")
 
 fs.makeDir("/Seanware/Savedata")
@@ -55,30 +63,16 @@ local function InstallAdditionalModules()
 		while(installing) do
 			term.clear()
 			term.setCursorPos(1,1)
-			term.setTextColor(colors.orange)
-
-			print(" _____                               ")
-			print("|   __|___ ___ ___ _ _ _ ___ ___ ___ ")
-			print("|__   | -_| .'|   | | | | .'|  _| -_|")
-			print("|_____|___|__,|_|_|_____|__,|_| |___|")
-			print("")
-
+			newCursorPos = PrintLogo(1)
 			term.setTextColor(colors.white)
-			term.setCursorPos(1,6)				
+			term.setCursorPos(1, newCursorPos)				
 			term.write("Filename in CCLuaProjectsRepo:")
-			term.setCursorPos(1,7)
+			term.setCursorPos(1, newCursorPos + 1)
 			local repoFile = read()
 
 			term.clear()
 			term.setCursorPos(1,1)
-			term.setTextColor(colors.orange)
-
-			print(" _____                               ")
-			print("|   __|___ ___ ___ _ _ _ ___ ___ ___ ")
-			print("|__   | -_| .'|   | | | | .'|  _| -_|")
-			print("|_____|___|__,|_|_|_____|__,|_| |___|")
-			print("")
-
+			PrintLogo()
 			term.setTextColor(colors.white)
 			term.setCursorPos(1,6)
 			term.write("Selected Filename: " .. repoFile)

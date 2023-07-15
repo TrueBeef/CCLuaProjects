@@ -15,6 +15,7 @@ mineLayerDepth = 0
 currentlyLowFuel = false -- Were we going home to refuel?
 currentlyFullInventory = false -- Were we going home for a full inventory?
 currentlyDoneMining = false -- We were heading home cause we're done!
+currentlyHitUnbreakable = false -- We've hit an unbreakable block. Possibly bedrock.
 
 mineVerticallyRequest = 0 -- The amount we requested to mine vertically.
 miningVertically = 0 -- The ammount we mined vertically.
@@ -48,6 +49,7 @@ local function SaveMinePlusData()
 			currentlyFullInventory = currentlyFullInventory,
 			currentlyLowFuel = currentlyLowFuel,
 			currentlyDoneMining = currentlyDoneMining,
+			currentlyHitUnbreakable = currentlyHitUnbreakable,
 			mineVerticallyRequest = mineVerticallyRequest,
 			miningVertically = miningVertically,
 			greatestZ = greatestZ,
@@ -76,6 +78,7 @@ local function LoadMinePlusData()
 	mineLayerWidth = saveData["mineLayerWidth"]
 	mineLayerDepth = saveData["mineLayerDepth"]
 	currentlyDoneMining = saveData["currentlyDoneMining"]
+	currentlyHitUnbreakable = saveData["currentlyHitUnbreakable"]
 	mineVerticallyRequest = saveData["mineVerticallyRequest"]
 	miningVertically = saveData["miningVertically"]
 	returnHome = saveData["returnHome"]
@@ -101,6 +104,7 @@ local function LoadMinePlusData()
 	print("currentlyLowFuel: " .. tostring(currentlyLowFuel))
 	print("currentlyFullInventory" .. tostring(currentlyFullInventory))	
 	print("currentlyDoneMining" .. tostring(currentlyDoneMining))	
+	print("currentlyHitUnbreakable" .. tostring(currentlyHitUnbreakable))	
 end
 
 -- An override of base util function. Allows us to save states.
@@ -113,12 +117,19 @@ local function GoToPos(pos)
 	SaveMinePlusData()
 end
 
-local function Return_DoneMining()
+local function Return_HitUnBreakable()
+	local currentDirection, turtlePos = turtleUtil.getLocalData()
+
+	currentlyHitUnbreakable = true
+	SaveMinePlusData()
+
 	term.clear()
 	term.setCursorPos(1,1)
-	term.write("We're done mining!")
+	term.write("We've hit an unbreakable block.")
 	term.setCursorPos(1,2)
+	term.write("Most likely bedrock!")
 	
+	GoToPos(vector.new(turtlePos.x, turtlePos.y, 0)) -- Sends us straight up.
 	GoToPos(vector.new(0, 0, 0))	
 	turtleUtil.faceDirection(turtleUtil.direction.North)
 
@@ -126,8 +137,30 @@ local function Return_DoneMining()
 	ClearSaveData()
 end
 
+local function Return_DoneMining()
+	local currentDirection, turtlePos = turtleUtil.getLocalData()
+
+	currentlyDoneMining = true
+	SaveMinePlusData()
+
+	term.clear()
+	term.setCursorPos(1,1)
+	term.write("We're done mining!")
+	term.setCursorPos(1,2)
+	
+	GoToPos(vector.new(turtlePos.x, turtlePos.y, 0)) -- Sends us straight up.
+	GoToPos(vector.new(0, 0, 0))
+	turtleUtil.faceDirection(turtleUtil.direction.North)
+
+	turtleUtil.clearSaveData()
+	ClearSaveData()
+end
+
 local function Return_FullInventory()
+	local currentDirection, turtlePos = turtleUtil.getLocalData()
+
 	currentlyFullInventory = true	
+	SaveMinePlusData()
 
 	term.clear()
 	term.setCursorPos(1,1)
@@ -135,6 +168,7 @@ local function Return_FullInventory()
 	term.setCursorPos(1,2)
 	term.write("Please empty it before I continue.")
 	term.setCursorPos(1,3)
+	GoToPos(vector.new(turtlePos.x, turtlePos.y, 0)) -- Sends us straight up.
 	GoToPos(vector.new(0, 0, 0))
 	SaveMinePlusData()
 
@@ -155,6 +189,7 @@ end
 
 local function Return_OutOfFuel()
 	currentlyLowFuel = true
+	SaveMinePlusData()
 
 	local currentDirection, turtlePos = turtleUtil.getLocalData()
 	local costToHome = (math.abs(turtlePos.x) + math.abs(turtlePos.y) + math.abs(turtlePos.z)) + 1
@@ -214,9 +249,34 @@ local function FindBottom()
 	while(turtlePos.y == 0 and turtlePos.x == 1 and math.fmod(turtlePos.z, 6) ~= 0) do
 		currentDirection, turtlePos = turtleUtil.getLocalData()
 		turtleUtil.moveUp()
-	end	
+	end
 
 	return true		
+end
+
+local function Mine(mineDirection) 
+	if(mineDirection == "Up") then
+		if(Mine("Up") == true)then
+			return true
+		else
+			Return_HitUnBreakable()
+			return false
+		end
+	else if (mineDirection == "Down") then
+		if(Mine("Down") == true)then
+			return true
+		else
+			Return_HitUnBreakable()
+			return false
+		end
+	else
+		if(Mine("Forward") == true)then
+			return true
+		else
+			Return_HitUnBreakable()
+			return false
+		end
+	end
 end
 
 -- Takes a pos or neg param for how many blocks we are mining. Usually 3.
@@ -229,7 +289,7 @@ local function MineVertically(numBlocks)
 		if(numBlocks > 0) then
 			-- We're mining Up.
 			if(turtleUtil.moveUp() == false) then
-				turtle.digUp()
+				Mine("Up")
 				turtleUtil.moveUp()
 			end
 
@@ -243,7 +303,7 @@ local function MineVertically(numBlocks)
 		elseif(numBlocks < 0) then
 			-- We're mining down.
 			if(turtleUtil.moveDown() == false) then
-				turtle.digDown()
+				Mine("Down")
 				turtleUtil.moveDown()
 			end
 
@@ -283,8 +343,8 @@ end
 local function TravelAndMine(travelPos)
 	local targetPos = vector.new(travelPos.x, travelPos.y, travelPos.z)
 	GoToPos(targetPos)
-	turtle.digUp()
-	turtle.digDown()
+	Mine("Up")
+	Mine("Down")
 	CheckResources()
 
 	return turtleUtil.getLocalData()
@@ -322,8 +382,8 @@ local function MineLayer(layMaxW, layMaxL, layMaxD)
 		
 		if(math.fmod(turtlePos.z, 6) == 0) then
 			if(turtlePos.x == 1) then
-				turtle.digUp()
-				turtle.digDown()
+				Mine("Up")
+				Mine("Down")
 				targetPos = vector.new(turtlePos.x + 1, turtlePos.y, turtlePos.z)
 				currentDirection, turtlePos = TravelAndMine(targetPos)
 			elseif(turtlePos.x < layMaxL) then
@@ -341,8 +401,8 @@ local function MineLayer(layMaxW, layMaxL, layMaxD)
 		else
 
 			if(turtlePos.x == layMaxL) then
-				turtle.digUp()
-				turtle.digDown()
+				Mine("Up")
+				Mine("Down")
 				targetPos = vector.new(turtlePos.x - 1, turtlePos.y, turtlePos.z)
 				currentDirection, turtlePos = TravelAndMine(targetPos)
 			elseif(turtlePos.x > 1) then
@@ -363,8 +423,8 @@ local function MineLayer(layMaxW, layMaxL, layMaxD)
 		if(math.fmod(turtlePos.z, 6) == 0) then			
 
 			if(turtlePos.x == layMaxL) then
-				turtle.digUp()
-				turtle.digDown()
+				Mine("Up")
+				Mine("Down")
 				targetPos = vector.new(turtlePos.x - 1, turtlePos.y, turtlePos.z)
 				currentDirection, turtlePos = TravelAndMine(targetPos)
 			elseif(turtlePos.x > 1) then
@@ -383,8 +443,8 @@ local function MineLayer(layMaxW, layMaxL, layMaxD)
 		else
 
 			if(turtlePos.x == 1) then
-				turtle.digUp()
-				turtle.digDown()
+				Mine("Up")
+				Mine("Down")
 				targetPos = vector.new(turtlePos.x + 1, turtlePos.y, turtlePos.z)
 				currentDirection, turtlePos = TravelAndMine(targetPos)
 			elseif(turtlePos.x < layMaxL) then
@@ -418,7 +478,7 @@ local function Quarry(LayerWidth, LayerLength, LayerDepth)
 	local currentDirection, turtlePos = turtleUtil.getLocalData()
 	if(turtlePos == vector.new(0, 0, 0)) then
 		if(turtleUtil.moveForward() == false) then
-			turtle.dig()
+			Mine("Forward")
 			turtleUtil.moveForward()
 		end	
 	end
@@ -464,6 +524,9 @@ local function CheckForLoadData()
 		elseif(currentlyDoneMining and returnHome == "y") then
 			-- We were heading home since we've finished the mine.
 			Return_DoneMining()
+		elseif(currentlyHitUnbreakable) then
+			-- We were heading home since we've finished the mine.
+			Return_HitUnBreakable()
 		end
 
 		--Check if we were going vertically through layers.
@@ -481,8 +544,8 @@ local function CheckForLoadData()
 
 		-- Just make sure we mine the above and below blocks.
 		if(turtlePos ~= vector.new(0, 0, 0)) then
-			turtle.digUp()
-			turtle.digDown()
+			Mine("Up")
+			Mine("Down")
 		end
 
 		BeginMineProcess()
