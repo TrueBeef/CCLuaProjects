@@ -124,73 +124,94 @@ local function CheckInventoryFullnes ()
 end
 
 local function MoveBackwardUtil()
-	if(turtle.back()) then
+	lastLocalPos = vector.new(localPos.x, localPos.y, localPos.z)
+	
+	if(currentFacingDir == facingDirection.North) then
+		-- Sub to X Coord
+		localPos = localPos - vector.new(1, 0, 0)
+	elseif(currentFacingDir == facingDirection.South) then
+		-- Add X Coord
+		localPos = localPos + vector.new(1, 0, 0)
+	elseif(currentFacingDir == facingDirection.East) then
+		-- Subtract Y coord
+		localPos = localPos - vector.new(0, 1, 0)
+	else
+		-- Add to Y coord
+		localPos = localPos + vector.new(0, 1, 0)
+	end
 
-		if(currentFacingDir == facingDirection.North) then
-			-- Sub to X Coord
-			localPos = localPos - vector.new(1, 0, 0)
-		elseif(currentFacingDir == facingDirection.South) then
-			-- Add X Coord
-			localPos = localPos + vector.new(1, 0, 0)
-		elseif(currentFacingDir == facingDirection.East) then
-			-- Subtract Y coord
-			localPos = localPos - vector.new(0, 1, 0)
-		else
-			-- Add to Y coord
-			localPos = localPos + vector.new(0, 1, 0)
-		end
+	SaveTurtleUtilData()
+
+	if(turtle.back() == false) then
+		localPos = lastLocalPos
+		SaveTurtleUtilData()
+		return false
+	else
 		SaveTurtleUtilData()
 		return true
-	else
-		return false
 	end
 end
 
 -- Moves the turtle while also tallying what directions we've moved
+-- Buffer movement so that if the turtle is for some reason interrupted before finishing a move, we dont have positional drift.
 local function MoveForwardUtil()
-	if(turtle.forward()) then
+	lastLocalPos = vector.new(localPos.x, localPos.y, localPos.z)
 
-		if(currentFacingDir == facingDirection.North) then
-			-- Add to X Coord
-			localPos = localPos + vector.new(1, 0, 0)
-		elseif(currentFacingDir == facingDirection.South) then
-			-- Subtract X Coord
-			localPos = localPos - vector.new(1, 0, 0)
-		elseif(currentFacingDir == facingDirection.East) then
-			-- Add to Y coord
-			localPos = localPos + vector.new(0, 1, 0)
-		else
-			-- Subtract Y coord
-			localPos = localPos - vector.new(0, 1, 0)
-		end
-		
+	if(currentFacingDir == facingDirection.North) then
+		-- Add to X Coord
+		localPos = localPos + vector.new(1, 0, 0)
+	elseif(currentFacingDir == facingDirection.South) then
+		-- Subtract X Coord
+		localPos = localPos - vector.new(1, 0, 0)
+	elseif(currentFacingDir == facingDirection.East) then
+		-- Add to Y coord
+		localPos = localPos + vector.new(0, 1, 0)
+	else
+		-- Subtract Y coord
+		localPos = localPos - vector.new(0, 1, 0)
+	end
+
+	SaveTurtleUtilData()
+
+	if(turtle.forward() == false) then
+		localPos = lastLocalPos	
+		SaveTurtleUtilData()
+		return false
+	else
 		SaveTurtleUtilData()
 		return true
-	else
-		return false
 	end
 end
 
 local function MoveUpUtil()
-	if(turtle.up()) then
+	lastLocalPos = vector.new(localPos.x, localPos.y, localPos.z)
+	localPos = localPos + vector.new(0, 0, 1)
+	SaveTurtleUtilData()
 
+	if(turtle.up() == false) then
+		localPos = lastLocalPos
 		-- Add Z coord
-		localPos = localPos + vector.new(0, 0, 1)
+		SaveTurtleUtilData()
+		return false
+	else
 		SaveTurtleUtilData()
 		return true
-	else
-		return false
 	end
 end
 
 local function MoveDownUtil()
-	if(turtle.down()) then
-		-- Subtract Z coord
-		localPos = localPos - vector.new(0, 0, 1)
+	lastLocalPos = vector.new(localPos.x, localPos.y, localPos.z)
+	localPos = localPos + vector.new(0, 0, -1)
+	SaveTurtleUtilData()
+
+	if(turtle.down() == false) then
+		localPos = lastLocalPos
+		-- Add Z coord
+		SaveTurtleUtilData()
+		return false
+	else
 		SaveTurtleUtilData()
 		return true
-	else
-		return false
 	end	
 end
 
