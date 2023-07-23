@@ -19,6 +19,10 @@ term.setCursorPos(1, 1)
 term.setTextColor(colors.orange)      
 
 local function PrintLogo(cursorPos)
+	if(cursorPos == nil) then
+		cursorPos = 0
+	end
+
 	term.setTextColor(colors.magenta)
 	print(" _____                               ")
 	print("|   __|___ ___ ___ _ _ _ ___ ___ ___ ")
