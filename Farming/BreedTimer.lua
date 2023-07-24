@@ -78,6 +78,7 @@ local function InitializeTimer()
 		desiredTimer = secondsRemaining 
 		SaveTimerData()
 		TriggerBreed()
+		CheckTimer()
 	end
 end
 
