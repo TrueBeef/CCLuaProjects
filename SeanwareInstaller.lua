@@ -1,6 +1,3 @@
--- Shortened Raw Link: https://tinyurl.com/SeanWareInstaller
--- wget run https://tinyurl.com/SeanWareInstaller
-
 --[[
  ________  _______   ________  ________   ___       __   ________  ________  _______      
 |\   ____\|\  ___ \ |\   __  \|\   ___  \|\  \     |\  \|\   __  \|\   __  \|\  ___ \     
@@ -9,10 +6,15 @@
   \|____|\  \ \  \_|\ \ \  \ \  \ \  \\ \  \ \  \|\__\_\  \ \  \ \  \ \  \\  \\ \  \_|\ \ 
     ____\_\  \ \_______\ \__\ \__\ \__\\ \__\ \____________\ \__\ \__\ \__\\ _\\ \_______\
    |\_________\|_______|\|__|\|__|\|__| \|__|\|____________|\|__|\|__|\|__|\|__|\|_______|
-   \|_________|                                                                           
-                                                                                                                                                                
+   \|_________|                                                                                                                                                                                                                                       
+
+Copyright Seanware(tm)
+Shortened Raw Link: https://tinyurl.com/SeanWareInstaller
+To install to computer, run line:
+
+wget run https://tinyurl.com/SeanWareInstaller
+
 --]]
--- Copyright Seanware(tm)
 
 term.clear()
 term.setCursorPos(1, 1)
@@ -30,6 +32,7 @@ local function PrintLogo(cursorPos)
 	print("|__   | -_| .'|   | | | | .'|  _| -_|")
 	print("|_____|___|__,|_|_|_____|__,|_| |___|")
 	print("")
+
 	return cursorPos + 5
 end
 
