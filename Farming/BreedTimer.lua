@@ -4,8 +4,6 @@ secondsRemaining = 0
 desiredTimer = 0
 
 local function SaveTimerData()
-	-- Also make the Movement Util save
-	turtleUtil.saveTurtleUtilData()
 
 	fs.makeDir("/Seanware/Savedata")
 	local saveFile = fs.open("/Seanware/Savedata/BreedTimer.json", "w")
